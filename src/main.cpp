@@ -9,6 +9,7 @@
 #include <vector>
 #include <random>
 
+#include "instance_data.h"
 //#include "VNS_functions.h"
 
 using namespace std;
@@ -61,27 +62,56 @@ int main (int argc, char *argv[]) {
 
    srand (22);
 
-   vector<bool> prueba (20, 0);
+   string name = "data/mknap1.txt";
 
-   cout << "Valores: ";
+   cout << "\n String: " << name << endl;
+   DataProblem data(name);
 
-   for (int i=0; i < prueba.size(); ++i) cout << prueba[i] << " ";
+   cout << "\n Num problems: " << data.getNumProblems();
+   cout << "\n Num items: ";
 
-   cout << endl;
+   for (int i = 0; i < data.getNumItemsSize(); ++i) {
 
-   prueba[0] = 1;
-   prueba[5] = 1;
-   prueba[10] = 1;
-   prueba[15] = 1;
+      cout << data.getNumItems(i) << " ";
+   }
 
-   for (int i = 0; i < 10; ++i) {
-   SwapRandomTwo(prueba);
+   cout << "\n Num dimensions: ";
 
-   cout << "\nValores: ";
+   for (int i = 0; i < data.getNumDimensionsSize(); ++i) {
 
-   for (int i=0; i < prueba.size(); ++i) cout << prueba[i] << " ";
+      cout << data.getNumDimensions(i) << " ";
+   }
 
-   cout << endl;
-}
+   cout << "\n Values: \n";
+
+   for (int i = 0; i < data.getItemValueSize(); ++i) {
+      for (int j = 0; j < data.getItemValueSize(i); ++j) {
+
+         cout << data.getItemValue(i, j) << " ";
+      }
+
+      cout << endl << " ";
+   }
+
+   cout << "\n Weights: \n";
+
+   for (int i = 0; i < data.getItemWeightSize(); ++i) {
+      for (int j = 0; j < data.getItemWeightSize(i); ++j) {
+
+         cout << data.getItemWeight(i, j) << " ";
+      }
+
+      cout << endl << " ";
+   }
+
+   cout << "\n Knapsack weights: ";
+
+   for (int i = 0; i < data.getKnapsackWeightSize(); ++i) {
+
+      cout << data.getKnapsackWeight(i) << " ";
+   }
+
+   cout << endl << endl;
+
    return 0;
 }
