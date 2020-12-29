@@ -14,6 +14,8 @@ using namespace std;
 class DataProblem {
 
    private:
+
+      conts int MAX_ITEM_LINE = 15; // Number of maximum items per line
       int num_problems;
 
       vector<int> num_items;
