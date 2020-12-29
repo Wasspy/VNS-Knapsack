@@ -179,16 +179,11 @@ bool DataProblem::ReadFile (string file_name) {
 // PRE: data must be clear
 bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_iterations) {
 
-   int num_items_read = 0; // VOY POR AQUI
    string text;
 
-   //cout << "\n ReadColumns" << endl;
-
-   for (int i = 0; i < max_iterations - 1; ++i) {
+   for (int i = 0; i < (max_iterations - 1); ++i) {
 
       getline(file, text, ' ');
-
-      //cout << text << " ";
 
       data.push_back(stof(text));
    }
@@ -196,7 +191,6 @@ bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_ite
    getline(file, text);
    data.push_back(stof(text));
 
-   //cout << text << endl;
 
    return !file.eof();
 };
