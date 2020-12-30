@@ -21,7 +21,6 @@ class VNS {
       vector<float> items_value;
       vector<float> items_weight;
       float (*improve_solution)(vector<bool>);
-      int (*neighborhood_change)(vector<bool>);
 
       int index;
       float solution_value;
@@ -33,8 +32,7 @@ class VNS {
       VNS (const float &new_knapsack_weight, const vector<float> &new_items_value,
            const vector<float> &new_items_weight, const vector<bool> &new_solution,
            const vector<void (*)(vector<bool>)> &new_neighborhood,
-           float (*new_improve_solution)(vector<bool>),
-           int (*new_neighborhood_change)(vector<bool>));
+           float (*new_improve_solution)(vector<bool>);
 
       ~VNS ();
 
@@ -101,12 +99,6 @@ class VNS {
       float SolutionImprovement (vector<bool> &new_solution);
 
       // Neighborhood change step: wich neighborhood will be explore next
-      void SelectNeighborhood (vector<bool> &new_solution);
+      // Using Sequential Neighborhood change step
+      void SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value);
 };
-
-
-// Basic Variable Neighborhood Search algorithm
-float BVNS (vector<bool> &solution, int num_neighborhood,
-            float (*shaking_solution)(vector<bool>, vector<bool>, int),
-            float (*improvement_solution)(vector<bool>, float, int),
-            float (*select_neighborhood)(vector<bool>, vector<bool>, float, float, int));

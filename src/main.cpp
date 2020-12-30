@@ -22,6 +22,40 @@ void ModifyRandomOne (vector<bool> &solution) {
    solution[item] = !solution[item];
 }
 
+// Neighborhood: puts in or takes out 1 random item
+// For improvement the solution
+float ModifyRandomOne (vector<bool> &solution, float solution_value, bool first_better) {
+
+   int new_value = -1;
+   int solution_size = solution.size();
+
+   vector<bool> new_solution;
+
+   if (first_better) {
+
+      for (int i = 0; i < solution_size && new_value < value; ++i) {
+
+         new_solution = solution;
+         new_solution[i] = !new_solution[i];
+
+         new_value = SolutionValue(new_solution);
+         
+      }
+
+   } else {
+
+
+   }
+
+
+
+   for (int i = 0; i <)
+
+   int item = rand() % solution.size();
+
+   solution[item] = !solution[item];
+}
+
 // Neighborhood: puts in or takes out 2 random items
 void ModifyRandomTwo (vector<bool> &solution) {
 
@@ -38,8 +72,25 @@ void ModifyRandomTwo (vector<bool> &solution) {
     solution[second_item] = !solution[second_item];
 }
 
+// Neighborhood: puts in or takes out 2 random items
+// For improvement the solution
+void ModifyRandomTwo (vector<bool> &solution, bool first_better) {
+
+   int first_item = rand() % solution.size();
+
+   int second_item;
+
+   do {
+      second_item = rand() % solution.size();
+
+   } while (first_item == second_item);
+
+    solution[first_item] = !solution[first_item];
+    solution[second_item] = !solution[second_item];
+}
+
 // Neighborhood: puts in 1 random item and takes out another random item
-void SwapRandomTwo (vector<bool> &solution) {
+void SwapRandomOne (vector<bool> &solution) {
 
    int first_item = rand() % solution.size();
 
@@ -54,7 +105,87 @@ void SwapRandomTwo (vector<bool> &solution) {
    solution[second_item] = !solution[second_item];
 }
 
+// Neighborhood: puts in 1 random item and takes out another random item
+// For improvement the solution
+void SwapRandomOne (vector<bool> &solution, bool first_better) {
 
+   int first_item = rand() % solution.size();
+
+   int second_item;
+
+   do {
+      second_item = rand() % solution.size();
+
+   } while (first_item == second_item || solution[first_item] == solution[second_item]);
+
+   solution[first_item] = !solution[first_item];
+   solution[second_item] = !solution[second_item];
+}
+
+// Neighborhood: puts in 2 random items and takes out other two random items
+void SwapRandomTwo (vector<bool> &solution) {
+
+   int first_item = rand() % solution.size();
+
+   int second_item;
+   int third_item;
+   int fourth_item;
+
+   do {
+      second_item = rand() % solution.size();
+
+   } while (first_item == second_item || solution[first_item] == solution[second_item]);
+
+   do {
+      third_item = rand() % solution.size();
+
+   } while (first_item == third_item || second_item == third_item);
+
+   do {
+      fourth_item = rand() % solution.size();
+
+   } while (third_item == fourth_item || solution[third_item] == solution[fourth_item]);
+
+
+   solution[first_item] = !solution[first_item];
+   solution[second_item] = !solution[second_item];
+
+   solution[third_item] = !solution[third_item];
+   solution[fourth_item] = !solution[fourth_item];
+}
+
+// Neighborhood: puts in 2 random items and takes out other two random items
+// For improvement the solution
+void SwapRandomTwo (vector<bool> &solution, bool first_better) {
+
+   int first_item = rand() % solution.size();
+
+   int second_item;
+   int third_item;
+   int fourth_item;
+
+   do {
+      second_item = rand() % solution.size();
+
+   } while (first_item == second_item || solution[first_item] == solution[second_item]);
+
+   do {
+      third_item = rand() % solution.size();
+
+   } while (first_item == third_item || second_item == third_item);
+
+   do {
+      fourth_item = rand() % solution.size();
+
+   } while (third_item == fourth_item || solution[third_item] == solution[fourth_item]);
+
+
+   solution[first_item] = !solution[first_item];
+   solution[second_item] = !solution[second_item];
+
+   solution[third_item] = !solution[third_item];
+   solution[fourth_item] = !solution[fourth_item];
+}
 
 
 
@@ -64,7 +195,6 @@ int main (int argc, char *argv[]) {
 
    string name = "data/mknap1.txt";
 
-   cout << "\n String: " << name << endl;
    DataProblem data(name);
 
    cout << "\n Num problems: " << data.getNumProblems();

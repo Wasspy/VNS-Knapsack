@@ -15,14 +15,12 @@ using namespace std;
 VNS::VNS (const float &new_knapsack_weight, const vector<float> &new_items_value,
           const vector<float> &new_items_weight, const vector<bool> &new_solution,
           const vector<void (*)(vector<bool>)> &new_neighborhood,
-          float (*new_improve_solution)(vector<bool>),
-          int (*new_neighborhood_change)(vector<bool>)) {
+          float (*new_improve_solution)(vector<bool>)) {
 
    this->items_value = new_items_value;
    this->items_weight = new_items_weight;
    this->knapsack_weight = new_knapsack_weight;
    this->improve_solution = new_improve_solution;
-   this->neighborhood_change = new_neighborhood_change;
 
    setSolution(new_solution);
    setIndexNeighborhood(0);
@@ -218,55 +216,22 @@ float VNS::SolutionImprovement (vector<bool> &new_solution) {
 };
 
 // Neighborhood change step: wich neighborhood will be explore next
-void VNS::SelectNeighborhood (vector<bool> &new_solution) {
+// Using Sequential Neighborhood change step
+void VNS::SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value) {
 
-   setIndexNeighborhood((*neighborhood_change)(new_solution));
-};;
+   if (new_solution_value > solution_value) {
 
-// Basic Variable Neighborhood Search algorithm
-float BVNS (vector<bool> &solution, int num_neighborhood,
-            float (*shaking_solution)(vector<bool>, vector<bool>, int),
-            float (*improvement_solution)(vector<bool>, float, int),
-            float (*select_neighborhood)(vector<bool>, vector<bool>, float, float, int)) {
+      solution = new_solution;
+      solution_value = new_solution_value;
+      setIndexNeighborhood (0);
 
-   int ind = 1;
-   float value = 0, //ObjectiveFunction(solution),
-         new_value = 0;
+   } else {
 
-   vector<bool> new_solution;
-
-   while (ind < num_neighborhood) {
-
-      //new_value = ShakingSolution(solution, new_solution, ind);
-
-      //new_value = ImprovementSolution(new_solution, new_value, ind);
-
-      //value = SelectNeighborhood(solution, new_solution, value, new_value, ind);
+      setIndexNeighborhood (index + 1);
    }
-
-   return value;
 };
 
-// General Variable Neighborhood Search algorithm
-float GVNS (vector<bool> &solution, int num_neighborhood,
-            float (*shaking_solution)(vector<bool>, vector<bool>, int),
-            float (*improvement_solution)(vector<bool>, float, int),
-            float (*select_neighborhood)(vector<bool>, vector<bool>, float, float, int)) {
+float VNS::LocalSearch (vector<bool> &new_solution, float new_solution_value) {
 
-   int ind = 1;
-   float value = 0, //ObjectiveFunction(solution),
-         new_value = 0;
 
-   vector<bool> new_solution;
-
-   while (ind < num_neighborhood) {
-
-      //new_value = ShakingSolution(solution, new_solution, ind);
-
-      //new_value = ImprovementSolution(new_solution, new_value, ind);
-
-      //value = SelectNeighborhood(solution, new_solution, value, new_value, ind);
-   }
-
-   return value;
-};
+}
