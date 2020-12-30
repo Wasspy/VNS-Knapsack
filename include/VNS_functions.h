@@ -25,14 +25,15 @@ class VNS {
       int index;
       float solution_value;
       vector<bool> solution;
-      vector<void (*)(vector<bool>)> neighborhood;
+      vector<void (*)(vector<bool>&)> neighborhood;
+      vector<float (*)(vector<bool>&, float, bool) neighborhood_improve;
 
    public:
 
       VNS (const float &new_knapsack_weight, const vector<float> &new_items_value,
            const vector<float> &new_items_weight, const vector<bool> &new_solution,
            const vector<void (*)(vector<bool>)> &new_neighborhood,
-           float (*new_improve_solution)(vector<bool>);
+           float (*new_improve_solution)(vector<bool>));
 
       ~VNS ();
 
@@ -101,4 +102,38 @@ class VNS {
       // Neighborhood change step: wich neighborhood will be explore next
       // Using Sequential Neighborhood change step
       void SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value);
+
+      float LocalSearch (vector<bool> &new_solution, float new_solution_value, bool first_better);
+
+      // Neighborhood: puts in or takes out 1 random item
+      void ModifyRandomOne (vector<bool> &solution);
+
+      // Neighborhood: puts in or takes out 1 random item
+      // To improve the solution
+      float ModifyRandomOne (vector<bool> &solution, float solution_value, bool first_better);
+
+      // Neighborhood: puts in or takes out 2 random items
+      void ModifyRandomTwo (vector<bool> &solution);
+
+      // Neighborhood: puts in or takes out 2 random items
+      // To improve the solution
+      float ModifyRandomTwo (vector<bool> &solution, float solution_value, bool first_better);
+
+      // Neighborhood: puts in 1 random item and takes out another random item
+      void SwapRandomOne (vector<bool> &solution);
+
+      // Neighborhood: puts in 1 random item and takes out another random item
+      // To improve the solution
+      float SwapRandomOne (vector<bool> &solution, float solution_value, bool first_better);
+
+      // Neighborhood: puts in 2 random items and takes out other two random items
+      void SwapRandomTwo (vector<bool> &solution);
+
+      // Neighborhood: puts in 2 random items and takes out other two random items
+      // To improve the solution
+      float SwapRandomTwo (vector<bool> &solution, float solution_value, bool first_better);
+
+
+
+
 };
