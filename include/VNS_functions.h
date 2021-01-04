@@ -9,35 +9,42 @@
 
 using namespace std;
 
-typedef void (*FunctionPointer)(vector<bool>);
-typedef int (*FunctionPointerInt)(vector<bool>);
-typedef float (*FunctionPointerFloat)(vector<bool>);
-
 class VNS {
 
    private:
 
+      const int MAX_NUM_NEIGHBORHOOD = 4;
+
       float knapsack_weight;
       vector<float> items_value;
       vector<float> items_weight;
-      float (*improve_solution)(vector<bool>);
 
       int index;
       float solution_value;
+      float solution_weight;
       vector<bool> solution;
-      vector<void (*)(vector<bool>&)> neighborhood;
-      vector<float (*)(vector<bool>&, float, bool) neighborhood_improve;
+      vector<int> neighborhood;
 
    public:
 
       VNS (const float &new_knapsack_weight, const vector<float> &new_items_value,
            const vector<float> &new_items_weight, const vector<bool> &new_solution,
-           const vector<void (*)(vector<bool>)> &new_neighborhood,
-           float (*new_improve_solution)(vector<bool>));
+           const vector<int> &new_neighborhood);
 
       ~VNS ();
 
+      // Shaking procedure: resolve local minimal traps
+      float ShakingSolution (vector<bool> &new_solution);
 
+      // Improvement procedure: improve the given solution
+      // Return: value of the new solution
+      float SolutionImprovement (vector<bool> &new_solution, float new_value, bool first_better = false);
+
+      // Neighborhood change step: wich neighborhood will be explore next
+      // Using Sequential Neighborhood change step
+      void SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value);
+
+      // Get methods
       float getKnapsackWeight ();
 
       vector<float> getItemsValue ();
@@ -46,32 +53,30 @@ class VNS {
 
       int getIndexNeighborhood ();
 
+      int getMaxNumNeighborhood ();
+
       float getSolutionValue ();
 
       vector<bool> getSolution ();
 
-      vector<void (*)(vector<bool>)> getNeighborhood ();
+      vector<int> getNeighborhood ();
 
-      FunctionPointer getNeighborhood (const int &k);
+      int getNeighborhood (const int &k);
 
-      FunctionPointerFloat getImproveSolution ();
-
-      FunctionPointerInt getNeighborhoodChange ();
-
-
+      // Set methods
       void setIndexNeighborhood (const int &index);
 
       void setSolution (const vector<bool> &solution);
 
       void setSolution (const vector<bool> &solution, const float &value);
 
-      void setNeighborhood (const vector<void (*)(vector<bool>)> &neighborhood);
+      void setNeighborhood (const vector<int> &new_neighborhood);
 
-      void addNeighborhood (void (*neighborhood)(vector<bool>));
+      // Modification methods
+      void addNeighborhood (int id_neighnorhood);
 
       // PRE: k -> [0, neighborhood.size()[
       bool removeNeighborhood (const int &k);
-
 
       bool RefreshSolutionValue ();
 
@@ -91,19 +96,6 @@ class VNS {
 
       // Calculates the value of the items in the knapsack (new solution)
       float SolutionValue (const vector<bool> &new_solution);
-
-      // Shaking procedure: resolve local minimal traps
-      float ShakingSolution (vector<bool> &new_solution);
-
-      // Improvement procedure: improve the given solution
-      // Return: value of the new solution
-      float SolutionImprovement (vector<bool> &new_solution);
-
-      // Neighborhood change step: wich neighborhood will be explore next
-      // Using Sequential Neighborhood change step
-      void SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value);
-
-      float LocalSearch (vector<bool> &new_solution, float new_solution_value, bool first_better);
 
       // Neighborhood: puts in or takes out 1 random item
       void ModifyRandomOne (vector<bool> &solution);
@@ -132,8 +124,5 @@ class VNS {
       // Neighborhood: puts in 2 random items and takes out other two random items
       // To improve the solution
       float SwapRandomTwo (vector<bool> &solution, float solution_value, bool first_better);
-
-
-
 
 };

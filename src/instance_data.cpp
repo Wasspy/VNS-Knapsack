@@ -142,18 +142,11 @@ bool DataProblem::ReadFile (string file_name) {
 
    problems = stoi(text);
 
-   cout << "Num problems: " << problems << endl;
-
    for (int i = 0; i < problems && !file.eof(); ++i) {      // Revisar
 
       getline(file, text);       // Discard blank line between problems
 
-      cout << "\n Problem " << i << ": " << endl << endl;
-
       ReadInstanceParameters (file, items, dimensions);
-
-      cout << "\n Num items: " << items;
-      cout << "\n Num dimensions: " << dimensions << endl;
 
       ReadItemsValue (file, items, dimensions);
 
@@ -197,27 +190,24 @@ bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_ite
 
 bool DataProblem::ReadInstanceParameters (ifstream &file, int &items, int &dimensions) {
 
-   //cout << "\n ReadInstanceParameters: " << endl;
    string text = "";
 
    getline(file, text, ' ');
 
    items = stoi(text);
-cout << "\n Items: " << text << " ";
+
    getline(file, text, ' ');
 
 
    dimensions = stoi(text);
-cout << text << " ";
+
    getline(file, text);
-   //cout << text << " ";
 
    return !file.eof();
 };
 
 bool DataProblem::ReadItemsValue (ifstream &file, int &items, int &dimensions) {
 
-//cout << "\n ReadItemsValue: " << endl;
    bool more_text = true;
 
    vector<float> values;
@@ -234,7 +224,6 @@ bool DataProblem::ReadItemsValue (ifstream &file, int &items, int &dimensions) {
 
 bool DataProblem::ReadItemsWeight (ifstream &file, int &items, int &dimensions) {
 
-//cout << "\n ReadItemsWeight: " << endl;
    bool more_text = true;
 
    vector<float> weights;
@@ -253,6 +242,5 @@ bool DataProblem::ReadItemsWeight (ifstream &file, int &items, int &dimensions) 
 
 bool DataProblem::ReadKnapsackWeight (ifstream &file, int &dimensions) {
 
- //cout << "\n ReadKnapsackWeight: " << endl;
    return ReadColumns(file, knapsack_weight, dimensions);
 }
