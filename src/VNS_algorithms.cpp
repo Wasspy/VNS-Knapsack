@@ -111,19 +111,18 @@ float VND (VNS &vns, vector<bool> &final_solution) {
    float new_value = 0;
    vector<bool> new_solution;
 
-   // cout << "\n VND" << endl << endl;
-
    do {
 
       new_solution = vns.getSolution();
 
       new_value = vns.getSolutionValue();
 
+
       new_value = vns.SolutionImprovement(new_solution, new_value);
 
       vns.SelectNeighborhood(new_solution, new_value);
 
-   } while (vns.getIndexNeighborhood() < vns.getMaxNumNeighborhood());
+   } while (vns.getIndexNeighborhood() < vns.getNumNeighborhood());
 
    final_solution = vns.getSolution();
 
@@ -138,8 +137,6 @@ float BVNS (VNS &vns, vector<bool> &final_solution, bool first_better) {
    float new_value = 0;
    vector<bool> new_solution;
 
-   // cout << "\n BVNS" << endl << endl;
-
    do {
 
       new_value = vns.ShakingSolution(new_solution);
@@ -148,7 +145,7 @@ float BVNS (VNS &vns, vector<bool> &final_solution, bool first_better) {
 
       vns.SelectNeighborhood(new_solution, new_value);
 
-   } while (vns.getIndexNeighborhood() < vns.getMaxNumNeighborhood());
+   } while (vns.getIndexNeighborhood() < vns.getNumNeighborhood());
 
    final_solution = vns.getSolution();
 
@@ -161,7 +158,6 @@ float GVNS (VNS &vns, vector<bool> &final_solution) {
 
    float new_value = 0;
 
-   // cout << "\n GVNS" << endl << endl;
    vector<bool> new_solution;
 
    VNS vns_vnd(vns.getKnapsackWeight(), vns.getItemsValue(), vns.getItemsWeight(),
@@ -178,7 +174,7 @@ float GVNS (VNS &vns, vector<bool> &final_solution) {
 
       vns.SelectNeighborhood(new_solution, new_value);
 
-   } while (vns.getIndexNeighborhood() < vns.getMaxNumNeighborhood());
+   } while (vns.getIndexNeighborhood() < vns.getNumNeighborhood());
 
    final_solution = vns.getSolution();
 
@@ -191,7 +187,6 @@ float GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_or
 
    float new_value = 0;
 
-   // cout << "\n GVNS" << endl << endl;
    vector<bool> new_solution;
 
    VNS vns_vnd(vns.getKnapsackWeight(), vns.getItemsValue(), vns.getItemsWeight(),
@@ -208,7 +203,7 @@ float GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_or
 
       vns.SelectNeighborhood(new_solution, new_value);
 
-   } while (vns.getIndexNeighborhood() < vns.getMaxNumNeighborhood());
+   } while (vns.getIndexNeighborhood() < vns.getNumNeighborhood());
 
    final_solution = vns.getSolution();
 

@@ -58,6 +58,11 @@ int VNS::getMaxNumNeighborhood () {
    return MAX_NUM_NEIGHBORHOOD;
 }
 
+int VNS::getNumNeighborhood () {
+
+   return num_neighborhood;
+};
+
 float VNS::getSolutionValue () {
 
    return solution_value;
@@ -123,6 +128,13 @@ void VNS::setNeighborhood (const vector<int> &new_neighborhood) {
          }
       }
    }
+
+   setNumNeighborhood(size);
+};
+
+void VNS::setNumNeighborhood (const int num) {
+
+   num_neighborhood = num;
 };
 
 void VNS::addNeighborhood (int id_neighnorhood) {
@@ -153,14 +165,7 @@ bool VNS::RefreshSolutionValue () {
 // Checks if the class' solution is correct
 bool VNS::SolutionIsCorrect () {
 
-   float total_weight = 0;
-
-   for(int i = 0; i < items_weight.size(); ++i){
-
-      total_weight += items_weight[i] * solution[i];
-   }
-
-   // cout << "\n Peso total solucion: " << total_weight;
+   float total_weight = SolutionWeight();
 
    return (total_weight <= knapsack_weight);
 };
@@ -168,14 +173,7 @@ bool VNS::SolutionIsCorrect () {
 // Checks if the new solution is correct
 bool VNS::SolutionIsCorrect (const vector<bool> &new_solution) {
 
-   float total_weight = 0;
-
-   for(int i = 0; i < items_weight.size(); ++i){
-
-      total_weight += items_weight[i] * new_solution[i];
-   }
-
-   // cout << "\n Peso total nueva solucion: " << total_weight;
+   float total_weight = SolutionWeight(new_solution);
 
    return (total_weight <= knapsack_weight);
 };
@@ -239,6 +237,33 @@ float VNS::SolutionValue (const vector<bool> &new_solution) {
    return total_value;
 };
 
+// Calculates the weight of the items in the knapsack (class' solution)
+float VNS::SolutionWeight () {
+
+   float total_weight = 0;
+
+   for(int i = 0; i < items_weight.size(); ++i){
+
+      total_weight += items_weight[i] * solution[i];
+   }
+
+   return total_weight;
+};
+
+// Calculates the weight of the items in the knapsack (new solution)
+float VNS::SolutionWeight (const vector<bool> &new_solution) {
+
+   float total_weight = 0;
+
+   for(int i = 0; i < items_weight.size(); ++i){
+
+      total_weight += items_weight[i] * new_solution[i];
+   }
+
+   return total_weight;
+
+};
+
 // Shaking procedure: resolve local minimal traps
 float VNS::ShakingSolution (vector<bool> &new_solution) {
 
@@ -253,40 +278,32 @@ float VNS::SolutionImprovement (vector<bool> &new_solution, float new_value, boo
 
    int improve_value = new_value;
 
-   // cout << "\n Antes del improvement: " << improve_value;
-
    switch (neighborhood[index]) {
 
       case 0:
 
          improve_value = ModifyRandomOne(new_solution, new_value, first_better);
 
-         // cout << "\n Modifica 1" << endl;
          break;
 
       case 1:
 
          improve_value = ModifyRandomTwo(new_solution, new_value, first_better);
 
-         // cout << "\n Modifica 2" << endl;
          break;
 
       case 2:
 
          improve_value = SwapRandomOne(new_solution, new_value, first_better);
 
-         // cout << "\n Cambia 2" << endl;
          break;
 
       case 3:
 
          improve_value = SwapRandomTwo(new_solution, new_value, first_better);
 
-         // cout << "\n Cambia 4" << endl;
          break;
    }
-
-   // cout << "\n Después del improvement: " << improve_value;
 
    return improve_value;
 };
@@ -295,14 +312,11 @@ float VNS::SolutionImprovement (vector<bool> &new_solution, float new_value, boo
 // Using Sequential Neighborhood change step
 void VNS::SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value) {
 
-   // cout << "\n Valor actual - valor nuevo: " << solution_value << " - " << new_solution_value;
    if (new_solution_value > solution_value) {
 
       solution = new_solution;
       solution_value = new_solution_value;
       setIndexNeighborhood (0);
-
-      // cout << "\n Entra" << endl;
 
    } else {
 
@@ -383,6 +397,7 @@ void VNS::ModifyRandomTwo (vector<bool> &new_solution) {
 
    int second_item;
 
+
    do {
       second_item = rand() % new_solution.size();
 
@@ -391,6 +406,7 @@ void VNS::ModifyRandomTwo (vector<bool> &new_solution) {
     new_solution[first_item] = !new_solution[first_item];
     new_solution[second_item] = !new_solution[second_item];
 };
+
 
 // Neighborhood: puts in or takes out 2 random items
 // To improve the solution
@@ -459,17 +475,66 @@ float VNS::ModifyRandomTwo (vector<bool> &initial_solution, float initial_soluti
 // Neighborhood: puts in 1 random item and takes out another random item
 void VNS::SwapRandomOne (vector<bool> &new_solution) {
 
-   int first_item = rand() % new_solution.size();
+   int first_item = 0;
+   int second_item = 0;
 
-   int second_item;
+   float new_weight;
+   float available_weight;
+
+   vector<int> in_knapsack;
+   vector<int> out_knapsack;
+   vector<int> available_items;
+
+   vector<bool> aux_solution = new_solution;
+
+
+   for (int i = 0; i < aux_solution.size(); ++i) {
+
+      if (aux_solution[i]) {
+         in_knapsack.push_back(i);
+
+      } else {
+
+         out_knapsack.push_back(i);
+      }
+   }
 
    do {
-      second_item = rand() % new_solution.size();
 
-   } while (first_item == second_item || new_solution[first_item] == new_solution[second_item]);
+      first_item = rand() % in_knapsack.size();
 
-   new_solution[first_item] = !new_solution[first_item];
-   new_solution[second_item] = !new_solution[second_item];
+      aux_solution[in_knapsack[first_item]] = !aux_solution[in_knapsack[first_item]];
+
+      new_weight = SolutionWeight(aux_solution);
+
+      available_weight = getKnapsackWeight() - new_weight;
+
+      for (int i = 0; i < out_knapsack.size(); ++i) {
+
+         if (getItemsWeight()[out_knapsack[i]] <= available_weight) {
+
+            available_items.push_back(out_knapsack[i]);
+         }
+      }
+
+      if (available_items.size() < 1) {
+
+         EraseElement(in_knapsack, first_item);
+
+         aux_solution = new_solution;
+      }
+
+   } while (available_items.size() < 1 && in_knapsack.size() > 0);
+
+   if (in_knapsack.size() > 0) {
+
+      second_item = rand() % available_items.size();
+
+      aux_solution[available_items[second_item]] = !aux_solution[available_items[second_item]];
+
+      new_solution = aux_solution;
+   }
+
 };
 
 // Neighborhood: puts in 1 random item and takes out another random item
@@ -545,33 +610,117 @@ float VNS::SwapRandomOne (vector<bool> &initial_solution, float initial_solution
 // Neighborhood: puts in 2 random items and takes out other two random items
 void VNS::SwapRandomTwo (vector<bool> &new_solution) {
 
-   int first_item = rand() % new_solution.size();
+   int first_item  = 0;
+   int second_item = 0;
+   int third_item  = 0;
+   int fourth_item = 0;
 
-   int second_item;
-   int third_item;
-   int fourth_item;
+   float new_weight;
+   float available_weight;
+
+   vector<int> first_in_knapsack;
+   vector<int> second_in_knapsack;
+   vector<int> third_out_knapsack;
+   vector<int> fourth_out_knapsack;
+
+   vector<int> third_available_items;
+   vector<int> fourth_available_items;
+
+   vector<bool> aux_solution = new_solution;
+
+
+   for (int i = 0; i < aux_solution.size(); ++i) {
+
+      if (aux_solution[i]) {
+         first_in_knapsack.push_back(i);
+
+      } else {
+
+         third_out_knapsack.push_back(i);
+      }
+   }
 
    do {
-      second_item = rand() % new_solution.size();
 
-   } while (first_item == second_item || new_solution[first_item] == new_solution[second_item]);
+      first_item = rand() % first_in_knapsack.size();
 
-   do {
-      third_item = rand() % new_solution.size();
+      second_in_knapsack = first_in_knapsack;
 
-   } while (first_item == third_item || second_item == third_item);
+      EraseElement(second_in_knapsack, first_item);
 
-   do {
-      fourth_item = rand() % new_solution.size();
+      while (second_in_knapsack.size() > 0 && third_available_items.size() < 1) {
 
-   } while (third_item == fourth_item || new_solution[third_item] == new_solution[fourth_item]);
+         second_item = rand() % second_in_knapsack.size();
 
+         aux_solution[first_in_knapsack[first_item]] = !aux_solution[first_in_knapsack[first_item]];
+         aux_solution[second_in_knapsack[second_item]] = !aux_solution[second_in_knapsack[second_item]];
 
-   new_solution[first_item] = !new_solution[first_item];
-   new_solution[second_item] = !new_solution[second_item];
+         new_weight = SolutionWeight(aux_solution);
 
-   new_solution[third_item] = !new_solution[third_item];
-   new_solution[fourth_item] = !new_solution[fourth_item];
+         available_weight = getKnapsackWeight() - new_weight;
+
+         for (int i = 0; i < third_out_knapsack.size(); ++i) {
+
+            if (getItemsWeight()[third_out_knapsack[i]] <= available_weight) {
+
+               third_available_items.push_back(third_out_knapsack[i]);
+            }
+         }
+
+         fourth_out_knapsack = third_available_items;
+
+         EraseElement(fourth_out_knapsack, third_item);
+
+         while (third_available_items.size() > 0 && fourth_available_items.size() < 1) {
+
+            third_item = rand() % third_available_items.size();
+
+            available_weight = available_weight - getItemsWeight()[third_available_items[third_item]];
+
+            for (int i = 0; i < fourth_out_knapsack.size(); ++i) {
+
+               if (getItemsWeight()[fourth_out_knapsack[i]] <= available_weight) {
+
+                  fourth_available_items.push_back(fourth_out_knapsack[i]);
+               }
+            }
+
+            if (fourth_available_items.size() < 1) {
+
+               EraseElement(third_available_items, third_item);
+            }
+
+         }
+
+         if (third_available_items.size() < 1) {
+
+            EraseElement(second_in_knapsack, second_item);
+
+            aux_solution = new_solution;
+         }
+
+      }
+
+      if (second_in_knapsack.size() < 1) {
+
+         EraseElement(first_in_knapsack, first_item);
+
+         aux_solution = new_solution;
+      }
+
+   } while (first_in_knapsack.size() > 0 && second_in_knapsack.size() < 1);
+
+   if (first_in_knapsack.size() > 0) {
+
+      fourth_item = rand() % fourth_available_items.size();
+
+      aux_solution[third_available_items[third_item]] = !aux_solution[third_available_items[third_item]];
+      aux_solution[fourth_available_items[fourth_item]] = !aux_solution[fourth_available_items[fourth_item]];
+
+      new_solution = aux_solution;
+
+   }
+
 };
 
 // Neighborhood: puts in 2 random items and takes out other two random items
@@ -756,4 +905,21 @@ float VNS::SwapRandomTwo (vector<bool> &initial_solution, float initial_solution
    }
 
    return best_value;
+};
+
+void VNS::EraseElement (vector<int> &new_solution, int id) {
+
+   if (new_solution.size() > 1) {
+
+      for (int i = id; i < new_solution.size() - 1; ++i) {
+
+         new_solution[i] = new_solution[i+1];
+      }
+
+      new_solution.pop_back();
+
+   } else {
+
+      new_solution.clear();
+   }
 };

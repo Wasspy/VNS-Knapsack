@@ -1,0 +1,343 @@
+
+ Semilla: 22
+ Fichero: data/knapsack_01.txt
+ Problemas: 8
+ Numero ejecuciones: 100
+ Orden de vecindario: 132
+ Orden de vecindario VND: 123
+
+ Problema 1: 
+   VND: 
+	 Valor media: 247
+	 Valor mediana: 247
+	 Valor dt: 0
+	 Valor mejor: 247
+
+	 Tiempo media: 1.343
+	 Tiempo mediana: 1.3
+	 Tiempo dt: 0.420061
+	 Tiempo mejor: 1.2
+   BVNS: 
+	 Valor media: 249.48
+	 Valor mediana: 247
+	 Valor dt: 12.1495
+	 Valor mejor: 309
+
+	 Tiempo media: 2.983
+	 Tiempo mediana: 2.65
+	 Tiempo dt: 0.907971
+	 Tiempo mejor: 1.7
+   GVNS: (VND igual)
+	 Valor media: 268.43
+	 Valor mediana: 263
+	 Valor dt: 22.6928
+	 Valor mejor: 309
+
+	 Tiempo media: 9.462
+	 Tiempo mediana: 9.6
+	 Tiempo dt: 4.15903
+	 Tiempo mejor: 5
+   GVNS: (VND distinto)
+	 Valor media: 265.03
+	 Valor mediana: 247
+	 Valor dt: 23.151
+	 Valor mejor: 309
+
+	 Tiempo media: 8.879
+	 Tiempo mediana: 6.65
+	 Tiempo dt: 4.67391
+	 Tiempo mejor: 4.7
+
+ Problema 2: 
+   VND: 
+	 Valor media: 47
+	 Valor mediana: 47
+	 Valor dt: 200
+	 Valor mejor: 47
+
+	 Tiempo media: 1.342
+	 Tiempo mediana: 1.2
+	 Tiempo dt: 0.444621
+	 Tiempo mejor: 1.1
+   BVNS: 
+	 Valor media: 47
+	 Valor mediana: 47
+	 Valor dt: 202.844
+	 Valor mejor: 47
+
+	 Tiempo media: 2.384
+	 Tiempo mediana: 2.2
+	 Tiempo dt: 1.12941
+	 Tiempo mejor: 1.9
+   GVNS: (VND igual)
+	 Valor media: 49.2
+	 Valor mediana: 51
+	 Valor dt: 220.41
+	 Valor mejor: 51
+
+	 Tiempo media: 7.002
+	 Tiempo mediana: 5.1
+	 Tiempo dt: 5.18937
+	 Tiempo mejor: 4.5
+   GVNS: (VND distinto)
+	 Valor media: 49.12
+	 Valor mediana: 51
+	 Valor dt: 217.157
+	 Valor mejor: 51
+
+	 Tiempo media: 6.911
+	 Tiempo mediana: 5.1
+	 Tiempo dt: 5.40759
+	 Tiempo mejor: 4.4
+
+ Problema 3: 
+   VND: 
+	 Valor media: 119
+	 Valor mediana: 47
+	 Valor dt: 146.86
+	 Valor mejor: 119
+
+	 Tiempo media: 1.388
+	 Tiempo mediana: 1.2
+	 Tiempo dt: 0.471258
+	 Tiempo mejor: 1.2
+   BVNS: 
+	 Valor media: 119
+	 Valor mediana: 47
+	 Valor dt: 149.521
+	 Valor mejor: 119
+
+	 Tiempo media: 2.589
+	 Tiempo mediana: 2.15
+	 Tiempo dt: 1.11175
+	 Tiempo mejor: 2
+   GVNS: (VND igual)
+	 Valor media: 119
+	 Valor mediana: 51
+	 Valor dt: 166.494
+	 Valor mejor: 119
+
+	 Tiempo media: 5.665
+	 Tiempo mediana: 5
+	 Tiempo dt: 6.11358
+	 Tiempo mejor: 4.9
+   GVNS: (VND distinto)
+	 Valor media: 119
+	 Valor mediana: 51
+	 Valor dt: 163.548
+	 Valor mejor: 119
+
+	 Tiempo media: 5.508
+	 Tiempo mediana: 5
+	 Tiempo dt: 6.24338
+	 Tiempo mejor: 4.8
+
+ Problema 4: 
+   VND: 
+	 Valor media: 107
+	 Valor mediana: 47
+	 Valor dt: 152.787
+	 Valor mejor: 107
+
+	 Tiempo media: 1.482
+	 Tiempo mediana: 1.2
+	 Tiempo dt: 0.536262
+	 Tiempo mejor: 1.3
+   BVNS: 
+	 Valor media: 107
+	 Valor mediana: 47
+	 Valor dt: 155.538
+	 Valor mejor: 107
+
+	 Tiempo media: 2.681
+	 Tiempo mediana: 2.1
+	 Tiempo dt: 1.15211
+	 Tiempo mejor: 2.1
+   GVNS: (VND igual)
+	 Valor media: 107
+	 Valor mediana: 51
+	 Valor dt: 173.388
+	 Valor mejor: 107
+
+	 Tiempo media: 7.976
+	 Tiempo mediana: 5
+	 Tiempo dt: 5.46668
+	 Tiempo mejor: 6.9
+   GVNS: (VND distinto)
+	 Valor media: 107
+	 Valor mediana: 51
+	 Valor dt: 170.316
+	 Valor mejor: 107
+
+	 Tiempo media: 7.886
+	 Tiempo mediana: 5
+	 Tiempo dt: 5.78551
+	 Tiempo mejor: 6.7
+
+ Problema 5: 
+   VND: 
+	 Valor media: 888
+	 Valor mediana: 47
+	 Valor dt: 1522.98
+	 Valor mejor: 888
+
+	 Tiempo media: 1.897
+	 Tiempo mediana: 1.2
+	 Tiempo dt: 2.89323
+	 Tiempo mejor: 1.3
+   BVNS: 
+	 Valor media: 888
+	 Valor mediana: 47
+	 Valor dt: 1521.99
+	 Valor mejor: 888
+
+	 Tiempo media: 3.225
+	 Tiempo mediana: 2.1
+	 Tiempo dt: 1.86119
+	 Tiempo mejor: 2
+   GVNS: (VND igual)
+	 Valor media: 888
+	 Valor mediana: 51
+	 Valor dt: 1513.04
+	 Valor mejor: 888
+
+	 Tiempo media: 8.1
+	 Tiempo mediana: 5
+	 Tiempo dt: 6.12875
+	 Tiempo mejor: 5.7
+   GVNS: (VND distinto)
+	 Valor media: 888
+	 Valor mediana: 51
+	 Valor dt: 1514.49
+	 Valor mejor: 888
+
+	 Tiempo media: 7.907
+	 Tiempo mediana: 5
+	 Tiempo dt: 5.90952
+	 Tiempo mejor: 5.8
+
+ Problema 6: 
+   VND: 
+	 Valor media: 1735
+	 Valor mediana: 47
+	 Valor dt: 3323.06
+	 Valor mejor: 1735
+
+	 Tiempo media: 1.097
+	 Tiempo mediana: 1
+	 Tiempo dt: 2.89214
+	 Tiempo mejor: 0.9
+   BVNS: 
+	 Valor media: 1735
+	 Valor mediana: 47
+	 Valor dt: 3321.98
+	 Valor mejor: 1735
+
+	 Tiempo media: 2.005
+	 Tiempo mediana: 1.8
+	 Tiempo dt: 2.36541
+	 Tiempo mejor: 1.4
+   GVNS: (VND igual)
+	 Valor media: 1735
+	 Valor mediana: 51
+	 Valor dt: 3312.48
+	 Valor mejor: 1735
+
+	 Tiempo media: 4.418
+	 Tiempo mediana: 4
+	 Tiempo dt: 9.43743
+	 Tiempo mejor: 3.7
+   GVNS: (VND distinto)
+	 Valor media: 1735
+	 Valor mediana: 51
+	 Valor dt: 3314.03
+	 Valor mejor: 1735
+
+	 Tiempo media: 4.506
+	 Tiempo mediana: 4
+	 Tiempo dt: 8.78226
+	 Tiempo mejor: 3.7
+
+ Problema 7: 
+   VND: 
+	 Valor media: 1315
+	 Valor mediana: 47
+	 Valor dt: 2448.84
+	 Valor mejor: 1315
+
+	 Tiempo media: 1.901
+	 Tiempo mediana: 1
+	 Tiempo dt: 3.01628
+	 Tiempo mejor: 1.8
+   BVNS: 
+	 Valor media: 1315
+	 Valor mediana: 47
+	 Valor dt: 2447.79
+	 Valor mejor: 1315
+
+	 Tiempo media: 5.275
+	 Tiempo mediana: 1.8
+	 Tiempo dt: 7.03614
+	 Tiempo mejor: 2
+   GVNS: (VND igual)
+	 Valor media: 1442.51
+	 Valor mediana: 51
+	 Valor dt: 2692.32
+	 Valor mejor: 1449
+
+	 Tiempo media: 18.371
+	 Tiempo mediana: 4
+	 Tiempo dt: 28.6367
+	 Tiempo mejor: 15.1
+   GVNS: (VND distinto)
+	 Valor media: 1441.41
+	 Valor mediana: 51
+	 Valor dt: 2691.62
+	 Valor mejor: 1449
+
+	 Tiempo media: 19.016
+	 Tiempo mediana: 4
+	 Tiempo dt: 30.7315
+	 Tiempo mejor: 14.9
+
+ Problema 8: 
+   VND: 
+	 Valor media: 1.31411e+07
+	 Valor mediana: 47
+	 Valor dt: 3.47665e+07
+	 Valor mejor: 1.31411e+07
+
+	 Tiempo media: 3.877
+	 Tiempo mediana: 1
+	 Tiempo dt: 7.05181
+	 Tiempo mejor: 3.4
+   BVNS: 
+	 Valor media: 1.31615e+07
+	 Valor mediana: 47
+	 Valor dt: 3.48204e+07
+	 Valor mejor: 1.33478e+07
+
+	 Tiempo media: 6.124
+	 Tiempo mediana: 1.8
+	 Tiempo dt: 11.289
+	 Tiempo mejor: 2.8
+   GVNS: (VND igual)
+	 Valor media: 1.32021e+07
+	 Valor mediana: 51
+	 Valor dt: 3.49278e+07
+	 Valor mejor: 1.34438e+07
+
+	 Tiempo media: 45.76
+	 Tiempo mediana: 4
+	 Tiempo dt: 102.916
+	 Tiempo mejor: 20.8
+   GVNS: (VND distinto)
+	 Valor media: 1.32033e+07
+	 Valor mediana: 51
+	 Valor dt: 3.4931e+07
+	 Valor mejor: 1.34684e+07
+
+	 Tiempo media: 45.724
+	 Tiempo mediana: 4
+	 Tiempo dt: 103.071
+	 Tiempo mejor: 21.2

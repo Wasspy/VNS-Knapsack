@@ -10,7 +10,7 @@ INC = include
 OBJ = obj
 BIN = bin
 CXX = g++
-CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2
+CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2 -w
 
 all: $(BIN)/VNS_Knapsack
 

@@ -60,7 +60,7 @@ int main (int argc, char *argv[]) {
    // Statistic
    int iterations = 100;
 
-   vector<float> best_time(4,-1);
+   vector<float> best_time(4,9999);
    vector<float> best_value(4,-1);
 
    vector<float> VND_times;
@@ -132,7 +132,7 @@ int main (int argc, char *argv[]) {
          order_VND = order_VND / 10;
       }
    }
-   
+
    cout << "\n Semilla: " << stoi(argv[1])
         << "\n Fichero: " << argv[2]
         << "\n Problemas: " << total_problems
@@ -144,8 +144,10 @@ int main (int argc, char *argv[]) {
    for (int i = 0; i < total_problems; ++i) {
 
       time_mean[0] = 0; time_mean[1] = 0; time_mean[2] = 0; time_mean[3] = 0;
-
       value_mean[0] = 0; value_mean[1] = 0; value_mean[2] = 0; value_mean[3] = 0;
+
+      best_time[0] = 9999; best_time[1] = 9999; best_time[2] = 9999; best_time[3] = 9999;
+      best_value[0] = -1;  best_value[1] = -1;  best_value[2] = -1;  best_value[3] = -1; 
 
       for (int j = 0; j < iterations; ++j) {
 
@@ -155,7 +157,6 @@ int main (int argc, char *argv[]) {
          end = system_clock::now();
 
          duration = end - start;
-
 
          VNS vns(data.getKnapsackWeight(i), data.getItemValue(i), data.getItemWeight(i),
                  initial_solution, neighborhood_order);

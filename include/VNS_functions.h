@@ -20,6 +20,7 @@ class VNS {
       vector<float> items_weight;
 
       int index;
+      int num_neighborhood;
       float solution_value;
       float solution_weight;
       vector<bool> solution;
@@ -55,6 +56,8 @@ class VNS {
 
       int getMaxNumNeighborhood ();
 
+      int getNumNeighborhood ();
+
       float getSolutionValue ();
 
       vector<bool> getSolution ();
@@ -71,6 +74,8 @@ class VNS {
       void setSolution (const vector<bool> &solution, const float &value);
 
       void setNeighborhood (const vector<int> &new_neighborhood);
+
+      void setNumNeighborhood (const int num);
 
       // Modification methods
       void addNeighborhood (int id_neighnorhood);
@@ -96,6 +101,12 @@ class VNS {
 
       // Calculates the value of the items in the knapsack (new solution)
       float SolutionValue (const vector<bool> &new_solution);
+
+      // Calculates the weight of the items in the knapsack (class' solution)
+      float SolutionWeight ();
+
+      // Calculates the weight of the items in the knapsack (new solution)
+      float SolutionWeight (const vector<bool> &new_solution);
 
       // Neighborhood: puts in or takes out 1 random item
       void ModifyRandomOne (vector<bool> &solution);
@@ -124,5 +135,7 @@ class VNS {
       // Neighborhood: puts in 2 random items and takes out other two random items
       // To improve the solution
       float SwapRandomTwo (vector<bool> &solution, float solution_value, bool first_better);
+
+      void EraseElement (vector<int> &new_solution, int id);
 
 };
