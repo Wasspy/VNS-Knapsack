@@ -10,7 +10,7 @@ INC = include
 OBJ = obj
 BIN = bin
 CXX = g++
-CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2 -w
+CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2
 
 all: $(BIN)/VNS_Knapsack
 
@@ -32,8 +32,8 @@ $(BIN)/VNS_Knapsack: $(OBJ)/main.o $(OBJ)/instance_data.o $(OBJ)/VNS_functions.o
 	$(CXX) -o $(BIN)/VNS_Knapsack $(OBJ)/main.o $(OBJ)/instance_data.o $(OBJ)/VNS_functions.o $(OBJ)/VNS_algorithms.o
 
 	@echo "\n ************************************"
-	@echo "\n"  Programa compilado. Para ejecutar: "\n\n\t"bin/VNS_Knapsack \<semilla\> \<fichero datos\> \<orden entornos\> \<orden entornos VND-GVNS\>
-	@echo "\n"  Ejemplo: bin/VNS_Knapsack 22 data/knapsack_01.txt 1234 123
+	@echo "\n"  Programa compilado. Para ejecutar: "\n\n\t"bin/VNS_Knapsack \<semilla\> \<ejecuciones\> \<fichero datos\> \<orden entornos\> \<orden entornos VND-GVNS\>
+	@echo "\n"  Ejemplo: bin/VNS_Knapsack 22 50 data/knapsack_01.txt 1234 123
 	@echo "\n ************************************ \n"
 
 # ************ Limpieza de ficheros ************

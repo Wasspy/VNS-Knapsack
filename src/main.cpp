@@ -17,12 +17,46 @@
 using namespace std;
 using namespace chrono;
 
+void getOrderNeighborhood (int order, vector<int> &order_vector) {
+
+   int aux_order = order;
+   int num_neighborhood = 0;
+
+   order_vector.clear();
+
+   while (aux_order > 0) {
+
+      ++num_neighborhood;
+
+      aux_order = aux_order / 10;
+
+      order_vector.push_back(-1);
+   }
+
+   for (int i = num_neighborhood - 1; i > -1; --i) {
+
+      order_vector[i] = order % 10;
+
+      order = order / 10;
+   }
+}
+
+void ReinitializeVector (double value, vector<double> &value_vector) {
+
+   int size = value_vector.size();
+
+   for (int i = 0; i < size; ++i) {
+
+      value_vector[i] = value;
+   }
+}
+
 int main (int argc, char *argv[]) {
 
-   if (argc < 5) {
+   if (argc < 6) {
 
       cerr << "\n ERROR: Número de parámetros insuficientes. " << endl
-           << "\t " << argv[0] << " <semilla> <nombre fichero> <orden entornos> <orden entornos VND del GVNS>" << endl
+           << "\t " << argv[0] << " <semilla> <ejecuciones> <nombre fichero> <orden entornos> <orden entornos VND del GVNS>" << endl
            << "\t Ejemplo: " << argv[0] << "22 data/knapsack_01.txt 1324 123"
            << endl << endl;
 
@@ -32,16 +66,14 @@ int main (int argc, char *argv[]) {
    // Algorithm parameters
    srand(stoi(argv[1]));
 
-   string name = argv[2];
+   int iterations = stoi(argv[2]);
 
-   int order = stoi(argv[3]);
-   int order_VND = stoi(argv[4]);
+   string name = argv[3];
+
+   int order = stoi(argv[4]);
+   int order_VND = stoi(argv[5]);
+
    int total_problems = 0;
-
-   int num_neighborhood = 0;
-   int vnd_num_neighborhood = 0;
-
-   bool equal_vnd_order = (order == order_VND);
 
    double solution_value;
 
@@ -58,112 +90,61 @@ int main (int argc, char *argv[]) {
    duration<double,micro> duration = end - start;
 
    // Statistic
-   int iterations = 5;
+   vector<double> best_time(3,9999);
+   vector<double> best_value(3,-1);
 
-   vector<double> best_time(4,9999);
-   vector<double> best_value(4,-1);
+   vector<double> aux_time;
+   vector<double> aux_value;
+
+   vector<double> mean_times(3,0);
+   vector<double> mean_values(3,0);
+
+   vector<double> median_times(3,0);
+   vector<double> median_values(3,0);
+
+   vector<double> standard_deviation_times(3,0);
+   vector<double> standard_deviation_values(3,0);
 
    vector<double> VND_times;
    vector<double> BVNS_times;
-   vector<double> GVNS_e_times;
-   vector<double> GVNS_d_times;
+   vector<double> GVNS_times;
 
    vector<double> VND_values;
    vector<double> BVNS_values;
-   vector<double> GVNS_e_values;
-   vector<double> GVNS_d_values;
-
-   vector<double> time_mean(4,0);
-   vector<double> value_mean(4,0);
-
-   double median;
-   double standard_deviation;
+   vector<double> GVNS_values;
 
    DataProblem data(name);
 
-   // total_problems = (data.getNumProblems() <= 10) ? data.getNumProblems() : 10;
-
    total_problems = data.getNumProblems();
 
-   int aux = order;
+   getOrderNeighborhood(order, neighborhood_order);
+   getOrderNeighborhood(order_VND, vnd_neighborhood_order);
 
-   num_neighborhood = 0;
-
-   while (aux > 0) {
-
-      ++num_neighborhood;
-
-      aux = aux / 10;
-
-
-      neighborhood_order.push_back(-1);
-   }
-
-
-
-   for (int i = num_neighborhood - 1; i > -1; --i) {
-
-      neighborhood_order[i] = order % 10;
-
-      order = order / 10;
-   }
-
-   if (equal_vnd_order) {
-
-      vnd_neighborhood_order = neighborhood_order;
-
-   } else {
-
-      aux = order_VND;
-
-      vnd_num_neighborhood = 0;
-
-      while (aux > 0) {
-
-         ++vnd_num_neighborhood;
-
-         aux = aux / 10;
-
-         vnd_neighborhood_order.push_back(-1);
-      }
-
-      for (int i = vnd_num_neighborhood - 1; i > -1; --i) {
-
-         vnd_neighborhood_order[i] = order_VND % 10;
-
-         order_VND = order_VND / 10;
-      }
-   }
-
-   cout << "\n Semilla: " << stoi(argv[1])
-        << "\n Fichero: " << argv[2]
-        << "\n Problemas: " << total_problems
-        << "\n Numero ejecuciones: " << iterations
-        << "\n Orden de vecindario: " << stoi(argv[3])
-        << "\n Orden de vecindario VND: " << stoi(argv[4])
-        << endl;
+   cout << "Instances,VND,BVNS,GVNS";
 
    for (int i = 0; i < total_problems; ++i) {
 
-      time_mean[0] = 0; time_mean[1] = 0; time_mean[2] = 0; time_mean[3] = 0;
-      value_mean[0] = 0; value_mean[1] = 0; value_mean[2] = 0; value_mean[3] = 0;
+      ReinitializeVector(0, mean_times);
+      ReinitializeVector(0, mean_values);
 
-      best_time[0] = 9999; best_time[1] = 9999; best_time[2] = 9999; best_time[3] = 9999;
-      best_value[0] = -1;  best_value[1] = -1;  best_value[2] = -1;  best_value[3] = -1;
+      ReinitializeVector(-1, best_value);
+      ReinitializeVector(9999, best_time);
+
+      ReinitializeVector(0, median_times);
+      ReinitializeVector(0, median_values);
+
+      ReinitializeVector(0, standard_deviation_times);
+      ReinitializeVector(0, standard_deviation_values);
+
+      VND_times.clear();  BVNS_times.clear();  GVNS_times.clear();
+      VND_values.clear(); BVNS_values.clear(); GVNS_values.clear();
 
       for (int j = 0; j < iterations; ++j) {
 
-         start = system_clock::now();
          initial_solution = Greedy(data, i);
-         //initial_solution = RandomSolution(data, i);
-         end = system_clock::now();
-
-         duration = end - start;
 
          VNS vns(data.getKnapsackWeight(i), data.getItemValue(i), data.getItemWeight(i),
                  initial_solution, neighborhood_order);
-
-         solution_value = vns.getSolutionValue();
 
          start = system_clock::now();
          solution_value = VND(vns, solution);
@@ -181,8 +162,8 @@ int main (int argc, char *argv[]) {
             best_time[0] = duration.count();
          }
 
-         value_mean[0] += solution_value;
-         time_mean[0] += duration.count();
+         mean_values[0] += solution_value;
+         mean_times[0] += duration.count();
 
          VND_values.push_back(solution_value);
          VND_times.push_back(duration.count());
@@ -206,8 +187,8 @@ int main (int argc, char *argv[]) {
             best_time[1] = duration.count();
          }
 
-         value_mean[1] += solution_value;
-         time_mean[1] += duration.count();
+         mean_values[1] += solution_value;
+         mean_times[1] += duration.count();
 
          BVNS_values.push_back(solution_value);
          BVNS_times.push_back(duration.count());
@@ -231,228 +212,99 @@ int main (int argc, char *argv[]) {
             best_time[2] = duration.count();
          }
 
-         value_mean[2] += solution_value;
-         time_mean[2] += duration.count();
+         mean_values[2] += solution_value;
+         mean_times[2] += duration.count();
 
-         GVNS_e_values.push_back(solution_value);
-         GVNS_e_times.push_back(duration.count());
+         GVNS_values.push_back(solution_value);
+         GVNS_times.push_back(duration.count());
 
-         if (!equal_vnd_order) {
-
-            vns.setSolution(initial_solution);
-            vns.setIndexNeighborhood(0);
-
-            start = system_clock::now();
-            solution_value = GVNS(vns, solution, vnd_neighborhood_order);
-            end = system_clock::now();
-
-            duration = end - start;
-
-            if (solution_value > best_value[3]) {
-
-               best_value[3] = solution_value;
-            }
-
-            if (duration.count() < best_time[3]) {
-
-               best_time[3] = duration.count();
-            }
-
-            value_mean[3] += solution_value;
-            time_mean[3] += duration.count();
-
-            GVNS_d_values.push_back(solution_value);
-            GVNS_d_times.push_back(duration.count());
-         }
       }
 
-      value_mean[0] /= 100; value_mean[1] /= 100; value_mean[2] /= 100; value_mean[3] /= 100;
+      mean_times[0] /= 100; mean_times[1] /= 100; mean_times[2] /= 100; mean_times[3] /= 100;
 
-      time_mean[0] /= 100; time_mean[1] /= 100; time_mean[2] /= 100; time_mean[3] /= 100;
+      cout << "\n(mean_values) P" << i + 1;
 
-      cout << "\n\n Problema " << i + 1 << " (" << data.getOptimalSolution(i) << "): "
-           << "\n\n   VND: "
-           << "\n\t Valor media: " << value_mean[0];
+      for (int k = 0; k < mean_values.size(); ++k) {
+
+         mean_values[k] /= iterations;
+
+         cout << "," << mean_values[k];
+      }
+
+      cout << "\n(value_median) P" << i + 1;
 
       sort(VND_values.begin(), VND_values.end());
-
-      median = (VND_values[iterations/2] + VND_values[iterations/2 - 1]) / 2;
-
-      cout << "\n\t Valor mediana: " << median;
-
-      standard_deviation = 0;
-
-      for (int j = 0; j < VND_values.size(); ++j) {
-
-         standard_deviation += (VND_values[j] - value_mean[0]) * (VND_values[j] - value_mean[0]);
-      }
-
-      standard_deviation /= iterations;
-
-      standard_deviation = sqrt(standard_deviation);
-
-      cout << "\n\t Valor dt: " << standard_deviation
-           << "\n\t Valor mejor: " << best_value[0]
-           << "\n\n\t Tiempo media: " << time_mean[0];
-
-      sort(VND_times.begin(), VND_times.end());
-
-      median = (VND_times[iterations/2] + VND_times[iterations/2 - 1]) / 2;
-
-      cout << "\n\t Tiempo mediana: " << median;
-
-      standard_deviation = 0;
-
-      for (int j = 0; j < VND_times.size(); ++j) {
-
-         standard_deviation += (VND_times[j] - time_mean[0]) * (VND_times[j] - time_mean[0]);
-      }
-
-      standard_deviation /= iterations;
-
-      standard_deviation = sqrt(standard_deviation);
-
-      cout << "\n\t Tiempo dt: " << standard_deviation
-           << "\n\t Tiempo mejor: " << best_time[0];
-
-
-      cout << "\n\n   BVNS: "
-           << "\n\t Valor media: " << value_mean[1];
-
       sort(BVNS_values.begin(), BVNS_values.end());
+      sort(GVNS_values.begin(), GVNS_values.end());
 
-      median = (BVNS_values[iterations/2] + BVNS_values[iterations/2 - 1]) / 2;
+      median_values[0] = (VND_values[iterations/2]  + VND_values[iterations/2 - 1]) / 2;
+      median_values[1] = (BVNS_values[iterations/2] + BVNS_values[iterations/2 - 1]) / 2;
+      median_values[2] = (GVNS_values[iterations/2] + GVNS_values[iterations/2 - 1]) / 2;
 
-      cout << "\n\t Valor mediana: " << median;
+      cout << "," << median_values[0] << "," << median_values[1] << "," << median_values[2];
 
-      standard_deviation = 0;
+      cout << "\n(value_sd) P" << i + 1;
 
-      for (int j = 0; j < BVNS_values.size(); ++j) {
+      ReinitializeVector(0, standard_deviation_values);
 
-      standard_deviation += (BVNS_values[j] - value_mean[1]) * (BVNS_values[j] - value_mean[1]);
+      for (int k = 0; k < VND_values.size(); ++k) {
+
+         standard_deviation_values[0] += (VND_values[k] - mean_values[0])  * (VND_values[k] - mean_values[0]);
+         standard_deviation_values[1] += (BVNS_values[k] - mean_values[1]) * (BVNS_values[k] - mean_values[1]);
+         standard_deviation_values[2] += (GVNS_values[k] - mean_values[2]) * (GVNS_values[k] - mean_values[2]);
       }
 
-      standard_deviation /= iterations;
+      standard_deviation_values[0] = sqrt(standard_deviation_values[0] / iterations);
+      standard_deviation_values[1] = sqrt(standard_deviation_values[1] / iterations);
+      standard_deviation_values[2] = sqrt(standard_deviation_values[2] / iterations);
 
-      standard_deviation = sqrt(standard_deviation);
+      cout << "," << standard_deviation_values[0] << "," << standard_deviation_values[1]
+           << "," << standard_deviation_values[1];
 
-      cout << "\n\t Valor dt: " << standard_deviation
-           << "\n\t Valor mejor: " << best_value[1]
-           << "\n\n\t Tiempo media: " << time_mean[1];
+      cout << "\n(best_value) P" << i + 1 << "," << best_value[0] << "," << best_value[1]
+           << "," << best_value[2];
 
-      sort(BVNS_times.begin(), BVNS_times.end());
+     cout << "\n(mean_times) P" << i + 1;
 
-      median = (BVNS_times[iterations/2] + BVNS_times[iterations/2 - 1]) / 2;
+     for (int k = 0; k < mean_times.size(); ++k) {
 
-      cout << "\n\t Tiempo mediana: " << median;
+        mean_times[k] /= iterations;
 
-      standard_deviation = 0;
+        cout << "," << mean_times[k];
+     }
 
-      for (int j = 0; j < BVNS_times.size(); ++j) {
+     cout << "\n(time_median) P" << i + 1;
 
-      standard_deviation += (BVNS_times[j] - time_mean[1]) * (BVNS_times[j] - time_mean[1]);
-      }
+     sort(VND_times.begin(), VND_times.end());
+     sort(BVNS_times.begin(), BVNS_times.end());
+     sort(GVNS_times.begin(), GVNS_times.end());
 
-      standard_deviation /= iterations;
+     median_times[0] = (VND_times[iterations/2]  + VND_times[iterations/2 - 1]) / 2;
+     median_times[1] = (BVNS_times[iterations/2] + BVNS_times[iterations/2 - 1]) / 2;
+     median_times[2] = (GVNS_times[iterations/2] + GVNS_times[iterations/2 - 1]) / 2;
 
-      standard_deviation = sqrt(standard_deviation);
+     cout << "," << median_times[0] << "," << median_times[1] << "," << median_times[2];
 
-      cout << "\n\t Tiempo dt: " << standard_deviation
-           << "\n\t Tiempo mejor: " << best_time[1];
+     cout << "\n(time_sd) P" << i + 1;
 
+     ReinitializeVector(0, standard_deviation_times);
 
-      cout << "\n\n   GVNS: (VND igual)"
-           << "\n\t Valor media: " << value_mean[2];
+     for (int k = 0; k < VND_times.size(); ++k) {
 
-      sort(GVNS_e_values.begin(), GVNS_e_values.end());
+        standard_deviation_times[0] += (VND_times[k] - mean_times[0])  * (VND_times[k] - mean_times[0]);
+        standard_deviation_times[1] += (BVNS_times[k] - mean_times[1]) * (BVNS_times[k] - mean_times[1]);
+        standard_deviation_times[2] += (GVNS_times[k] - mean_times[2]) * (GVNS_times[k] - mean_times[2]);
+     }
 
-      median = (GVNS_e_values[iterations/2] + GVNS_e_values[iterations/2 - 1]) / 2;
+     standard_deviation_times[0] = sqrt(standard_deviation_times[0] / iterations);
+     standard_deviation_times[1] = sqrt(standard_deviation_times[1] / iterations);
+     standard_deviation_times[2] = sqrt(standard_deviation_times[2] / iterations);
 
-      cout << "\n\t Valor mediana: " << median;
+     cout << "," << standard_deviation_times[0] << "," << standard_deviation_times[1]
+          << "," << standard_deviation_times[1];
 
-      standard_deviation = 0;
-
-      for (int j = 0; j < GVNS_e_values.size(); ++j) {
-
-      standard_deviation += (GVNS_e_values[j] - value_mean[2]) * (GVNS_e_values[j] - value_mean[2]);
-      }
-
-      standard_deviation /= iterations;
-
-      standard_deviation = sqrt(standard_deviation);
-
-      cout << "\n\t Valor dt: " << standard_deviation
-           << "\n\t Valor mejor: " << best_value[2]
-           << "\n\n\t Tiempo media: " << time_mean[2];
-
-      sort(GVNS_e_times.begin(), GVNS_e_times.end());
-
-      median = (GVNS_e_times[iterations/2] + GVNS_e_times[iterations/2 - 1]) / 2;
-
-      cout << "\n\t Tiempo mediana: " << median;
-
-      standard_deviation = 0;
-
-      for (int j = 0; j < GVNS_e_times.size(); ++j) {
-
-      standard_deviation += (GVNS_e_times[j] - time_mean[2]) * (GVNS_e_times[j] - time_mean[2]);
-      }
-
-      standard_deviation /= iterations;
-
-      standard_deviation = sqrt(standard_deviation);
-
-      cout << "\n\t Tiempo dt: " << standard_deviation
-           << "\n\t Tiempo mejor: " << best_time[2];
-
-
-      if (!equal_vnd_order) {
-
-          cout << "\n\n   GVNS: (VND distinto)"
-               << "\n\t Valor media: " << value_mean[3];
-
-          sort(GVNS_d_values.begin(), GVNS_d_values.end());
-
-          median = (GVNS_d_values[iterations/2] + GVNS_d_values[iterations/2 - 1]) / 2;
-
-          cout << "\n\t Valor mediana: " << median;
-
-          standard_deviation = 0;
-
-          for (int j = 0; j < GVNS_d_values.size(); ++j) {
-
-             standard_deviation += (GVNS_d_values[j] - value_mean[3]) * (GVNS_d_values[j] - value_mean[3]);
-          }
-
-          standard_deviation /= iterations;
-
-          standard_deviation = sqrt(standard_deviation);
-
-          cout << "\n\t Valor dt: " << standard_deviation
-               << "\n\t Valor mejor: " << best_value[3]
-               << "\n\n\t Tiempo media: " << time_mean[3];
-
-          sort(GVNS_d_times.begin(), GVNS_d_times.end());
-
-          median = (GVNS_d_times[iterations/2] + GVNS_d_times[iterations/2 - 1]) / 2;
-
-          cout << "\n\t Tiempo mediana: " << median;
-
-          standard_deviation = 0;
-
-          for (int j = 0; j < GVNS_d_times.size(); ++j) {
-
-             standard_deviation += (GVNS_d_times[j] - time_mean[3]) * (GVNS_d_times[j] - time_mean[3]);
-          }
-
-          standard_deviation /= iterations;
-
-          standard_deviation = sqrt(standard_deviation);
-
-          cout << "\n\t Tiempo dt: " << standard_deviation
-               << "\n\t Tiempo mejor: " << best_time[3] << endl;
-      }
-
+     cout << "\n(best_time) P" << i + 1 << "," << best_time[0] << "," << best_time[1]
+          << "," << best_time[2];
    }
 
 
