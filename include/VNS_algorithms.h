@@ -19,13 +19,13 @@ vector<bool> Greedy (DataProblem &data, int id_problem);
 vector<bool> RandomSolution (DataProblem &data, int id_problem);
 
 // Variable Neighborhood Descent algorithm
-float VND (VNS &vns, vector<bool> &final_solution);
+double VND (VNS &vns, vector<bool> &final_solution);
 
 // Basic Variable Neighborhood Search algorithm
-float BVNS (VNS &vns, vector<bool> &final_solution, bool first_better = true);
+double BVNS (VNS &vns, vector<bool> &final_solution, bool first_better = true);
 
 // General Variable Neighborhood Search algorithm (VND with similar neighborhoods)
-float GVNS (VNS &vns, vector<bool> &final_solution);
+double GVNS (VNS &vns, vector<bool> &final_solution);
 
 // General Variable Neighborhood Search algorithm (VND with different neighborhoods)
-float GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_order);
+double GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_order);

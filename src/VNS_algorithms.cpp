@@ -18,11 +18,11 @@ vector<bool> Greedy (DataProblem &data, int id_problem) {
    int size = data.getNumItems(id_problem);
 
    int id_max = 0;
-   float value_max = data.getItemWeight(id_problem, 0);
+   double value_max = data.getItemWeight(id_problem, 0);
 
-   float weight = 0;
-   float total_weight = 0;
-   float max_weight = data.getKnapsackWeight(id_problem);
+   double weight = 0;
+   double total_weight = 0;
+   double max_weight = data.getKnapsackWeight(id_problem);
 
    bool end_greedy = false;
 
@@ -65,9 +65,9 @@ vector<bool> RandomSolution (DataProblem &data, int id_problem) {
 
    int rand_id = -1;
 
-   float weight = 0;
-   float total_weight = 0;
-   float max_weight = data.getKnapsackWeight(id_problem);
+   double weight = 0;
+   double total_weight = 0;
+   double max_weight = data.getKnapsackWeight(id_problem);
 
    bool end_greedy = false;
    bool end_for = false;
@@ -106,9 +106,9 @@ vector<bool> RandomSolution (DataProblem &data, int id_problem) {
 };
 
 // Variable Neighborhood Descent algorithm
-float VND (VNS &vns, vector<bool> &final_solution) {
+double VND (VNS &vns, vector<bool> &final_solution) {
 
-   float new_value = 0;
+   double new_value = 0;
    vector<bool> new_solution;
 
    do {
@@ -132,9 +132,9 @@ float VND (VNS &vns, vector<bool> &final_solution) {
 
 
 // Basic Variable Neighborhood Search algorithm
-float BVNS (VNS &vns, vector<bool> &final_solution, bool first_better) {
+double BVNS (VNS &vns, vector<bool> &final_solution, bool first_better) {
 
-   float new_value = 0;
+   double new_value = 0;
    vector<bool> new_solution;
 
    do {
@@ -154,9 +154,9 @@ float BVNS (VNS &vns, vector<bool> &final_solution, bool first_better) {
 };
 
 // General Variable Neighborhood Search algorithm (VND with similar neighborhoods)
-float GVNS (VNS &vns, vector<bool> &final_solution) {
+double GVNS (VNS &vns, vector<bool> &final_solution) {
 
-   float new_value = 0;
+   double new_value = 0;
 
    vector<bool> new_solution;
 
@@ -183,9 +183,9 @@ float GVNS (VNS &vns, vector<bool> &final_solution) {
 };
 
 // General Variable Neighborhood Search algorithm (VND with different neighborhoods)
-float GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_order) {
+double GVNS (VNS &vns, vector<bool> &final_solution, vector<int> &neighborhood_order) {
 
-   float new_value = 0;
+   double new_value = 0;
 
    vector<bool> new_solution;
 

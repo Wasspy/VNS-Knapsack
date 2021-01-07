@@ -59,17 +59,17 @@ int DataProblem::getNumDimensionsSize () {
    return num_dimensions.size();
 };
 
-vector<vector<float>> DataProblem::getItemValue () {
+vector<vector<double>> DataProblem::getItemValue () {
 
    return item_value;
 };
 
-vector<float> DataProblem::getItemValue (int i) {
+vector<double> DataProblem::getItemValue (int i) {
 
    return item_value[i];
 };
 
-float DataProblem::getItemValue (int i, int j) {
+double DataProblem::getItemValue (int i, int j) {
 
    return item_value[i][j];
 };
@@ -84,17 +84,17 @@ int DataProblem::getItemValueSize (int i) {
    return item_value[i].size();
 };
 
-vector<vector<float>> DataProblem::getItemWeight () {
+vector<vector<double>> DataProblem::getItemWeight () {
 
    return item_weight;
 };
 
-vector<float> DataProblem::getItemWeight (int i) {
+vector<double> DataProblem::getItemWeight (int i) {
 
    return item_weight[i];
 };
 
-float DataProblem::getItemWeight (int i, int j) {
+double DataProblem::getItemWeight (int i, int j) {
 
    return item_weight[i][j];
 };
@@ -109,12 +109,12 @@ int DataProblem::getItemWeightSize (int i) {
    return item_weight[i].size();
 };
 
-vector<float> DataProblem::getKnapsackWeight () {
+vector<double> DataProblem::getKnapsackWeight () {
 
    return knapsack_weight;
 };
 
-float DataProblem::getKnapsackWeight (int i) {
+double DataProblem::getKnapsackWeight (int i) {
 
    return knapsack_weight[i];
 };
@@ -122,6 +122,11 @@ float DataProblem::getKnapsackWeight (int i) {
 int DataProblem::getKnapsackWeightSize () {
 
    return knapsack_weight.size();
+};
+
+double DataProblem::getOptimalSolution (int i) {
+
+   return optimal_solution[i];
 };
 
 bool DataProblem::ReadFile (string file_name) {
@@ -170,7 +175,7 @@ bool DataProblem::ReadFile (string file_name) {
 };
 
 // PRE: data must be clear
-bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_iterations) {
+bool DataProblem::ReadColumns (ifstream &file, vector<double> &data, int &max_iterations) {
 
    string text;
 
@@ -178,11 +183,11 @@ bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_ite
 
       getline(file, text, ' ');
 
-      data.push_back(stof(text));
+      data.push_back(stod(text));
    }
 
    getline(file, text);
-   data.push_back(stof(text));
+   data.push_back(stod(text));
 
 
    return !file.eof();
@@ -191,6 +196,8 @@ bool DataProblem::ReadColumns (ifstream &file, vector<float> &data, int &max_ite
 bool DataProblem::ReadInstanceParameters (ifstream &file, int &items, int &dimensions) {
 
    string text = "";
+
+   double optimal = -1;
 
    getline(file, text, ' ');
 
@@ -203,6 +210,13 @@ bool DataProblem::ReadInstanceParameters (ifstream &file, int &items, int &dimen
 
    getline(file, text);
 
+   optimal = stod(text);
+
+   for (int i = 0; i < dimensions; ++i) {
+
+      optimal_solution.push_back(optimal);
+   }
+
    return !file.eof();
 };
 
@@ -210,7 +224,7 @@ bool DataProblem::ReadItemsValue (ifstream &file, int &items, int &dimensions) {
 
    bool more_text = true;
 
-   vector<float> values;
+   vector<double> values;
 
    more_text = ReadColumns(file, values, items);
 
@@ -226,7 +240,7 @@ bool DataProblem::ReadItemsWeight (ifstream &file, int &items, int &dimensions) 
 
    bool more_text = true;
 
-   vector<float> weights;
+   vector<double> weights;
 
    for (int i = 0; i < dimensions && more_text; ++i) {
 

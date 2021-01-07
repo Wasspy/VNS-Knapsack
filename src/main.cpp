@@ -43,7 +43,7 @@ int main (int argc, char *argv[]) {
 
    bool equal_vnd_order = (order == order_VND);
 
-   float solution_value;
+   double solution_value;
 
    vector<bool> solution;
    vector<bool> initial_solution;
@@ -55,33 +55,35 @@ int main (int argc, char *argv[]) {
    auto start = system_clock::now();
    auto end = system_clock::now();
 
-   duration<float,micro> duration = end - start;
+   duration<double,micro> duration = end - start;
 
    // Statistic
-   int iterations = 100;
+   int iterations = 5;
 
-   vector<float> best_time(4,9999);
-   vector<float> best_value(4,-1);
+   vector<double> best_time(4,9999);
+   vector<double> best_value(4,-1);
 
-   vector<float> VND_times;
-   vector<float> BVNS_times;
-   vector<float> GVNS_e_times;
-   vector<float> GVNS_d_times;
+   vector<double> VND_times;
+   vector<double> BVNS_times;
+   vector<double> GVNS_e_times;
+   vector<double> GVNS_d_times;
 
-   vector<float> VND_values;
-   vector<float> BVNS_values;
-   vector<float> GVNS_e_values;
-   vector<float> GVNS_d_values;
+   vector<double> VND_values;
+   vector<double> BVNS_values;
+   vector<double> GVNS_e_values;
+   vector<double> GVNS_d_values;
 
-   vector<float> time_mean(4,0);
-   vector<float> value_mean(4,0);
+   vector<double> time_mean(4,0);
+   vector<double> value_mean(4,0);
 
-   float median;
-   float standard_deviation;
+   double median;
+   double standard_deviation;
 
    DataProblem data(name);
 
-   total_problems = (data.getNumProblems() <= 10) ? data.getNumProblems() : 10;
+   // total_problems = (data.getNumProblems() <= 10) ? data.getNumProblems() : 10;
+
+   total_problems = data.getNumProblems();
 
    int aux = order;
 
@@ -147,7 +149,7 @@ int main (int argc, char *argv[]) {
       value_mean[0] = 0; value_mean[1] = 0; value_mean[2] = 0; value_mean[3] = 0;
 
       best_time[0] = 9999; best_time[1] = 9999; best_time[2] = 9999; best_time[3] = 9999;
-      best_value[0] = -1;  best_value[1] = -1;  best_value[2] = -1;  best_value[3] = -1; 
+      best_value[0] = -1;  best_value[1] = -1;  best_value[2] = -1;  best_value[3] = -1;
 
       for (int j = 0; j < iterations; ++j) {
 
@@ -268,8 +270,8 @@ int main (int argc, char *argv[]) {
 
       time_mean[0] /= 100; time_mean[1] /= 100; time_mean[2] /= 100; time_mean[3] /= 100;
 
-      cout << "\n Problema " << i + 1 << ": "
-           << "\n   VND: "
+      cout << "\n\n Problema " << i + 1 << " (" << data.getOptimalSolution(i) << "): "
+           << "\n\n   VND: "
            << "\n\t Valor media: " << value_mean[0];
 
       sort(VND_values.begin(), VND_values.end());
@@ -314,7 +316,7 @@ int main (int argc, char *argv[]) {
            << "\n\t Tiempo mejor: " << best_time[0];
 
 
-      cout << "\n   BVNS: "
+      cout << "\n\n   BVNS: "
            << "\n\t Valor media: " << value_mean[1];
 
       sort(BVNS_values.begin(), BVNS_values.end());
@@ -359,7 +361,7 @@ int main (int argc, char *argv[]) {
            << "\n\t Tiempo mejor: " << best_time[1];
 
 
-      cout << "\n   GVNS: (VND igual)"
+      cout << "\n\n   GVNS: (VND igual)"
            << "\n\t Valor media: " << value_mean[2];
 
       sort(GVNS_e_values.begin(), GVNS_e_values.end());
@@ -406,7 +408,7 @@ int main (int argc, char *argv[]) {
 
       if (!equal_vnd_order) {
 
-          cout << "\n   GVNS: (VND distinto)"
+          cout << "\n\n   GVNS: (VND distinto)"
                << "\n\t Valor media: " << value_mean[3];
 
           sort(GVNS_d_values.begin(), GVNS_d_values.end());

@@ -12,8 +12,8 @@
 
 using namespace std;
 
-VNS::VNS (const float &new_knapsack_weight, const vector<float> &new_items_value,
-          const vector<float> &new_items_weight, const vector<bool> &new_solution,
+VNS::VNS (const double &new_knapsack_weight, const vector<double> &new_items_value,
+          const vector<double> &new_items_weight, const vector<bool> &new_solution,
           const vector<int> &new_neighborhood) {
 
    this->items_value = new_items_value;
@@ -33,17 +33,17 @@ VNS::~VNS () {
    neighborhood.clear();
 };
 
-float VNS::getKnapsackWeight () {
+double VNS::getKnapsackWeight () {
 
    return knapsack_weight;
 };
 
-vector<float> VNS::getItemsValue () {
+vector<double> VNS::getItemsValue () {
 
    return items_value;
 };
 
-vector<float> VNS::getItemsWeight () {
+vector<double> VNS::getItemsWeight () {
 
    return items_weight;
 };
@@ -63,7 +63,7 @@ int VNS::getNumNeighborhood () {
    return num_neighborhood;
 };
 
-float VNS::getSolutionValue () {
+double VNS::getSolutionValue () {
 
    return solution_value;
 };
@@ -95,7 +95,7 @@ void VNS::setSolution (const vector<bool> &new_solution) {
    RefreshSolutionValue();
 };
 
-void VNS::setSolution (const vector<bool> &new_solution, const float &new_value) {
+void VNS::setSolution (const vector<bool> &new_solution, const double &new_value) {
 
    this->solution = new_solution;
    this->solution_value = new_value;
@@ -165,7 +165,7 @@ bool VNS::RefreshSolutionValue () {
 // Checks if the class' solution is correct
 bool VNS::SolutionIsCorrect () {
 
-   float total_weight = SolutionWeight();
+   double total_weight = SolutionWeight();
 
    return (total_weight <= knapsack_weight);
 };
@@ -173,7 +173,7 @@ bool VNS::SolutionIsCorrect () {
 // Checks if the new solution is correct
 bool VNS::SolutionIsCorrect (const vector<bool> &new_solution) {
 
-   float total_weight = SolutionWeight(new_solution);
+   double total_weight = SolutionWeight(new_solution);
 
    return (total_weight <= knapsack_weight);
 };
@@ -212,9 +212,9 @@ void VNS::CreateNewSolution (vector<bool> &new_solution) {
 };
 
 // Calculates the value of the items in the knapsack (class' solution)
-float VNS::SolutionValue () {
+double VNS::SolutionValue () {
 
-   float total_value = 0;
+   double total_value = 0;
 
    for (int i = 0; i < solution.size(); ++i) {
 
@@ -225,9 +225,9 @@ float VNS::SolutionValue () {
 };
 
 // Calculates the value of the items in the knapsack (new solution)
-float VNS::SolutionValue (const vector<bool> &new_solution) {
+double VNS::SolutionValue (const vector<bool> &new_solution) {
 
-   float total_value = 0;
+   double total_value = 0;
 
    for (int i = 0; i < solution.size(); ++i) {
 
@@ -238,9 +238,9 @@ float VNS::SolutionValue (const vector<bool> &new_solution) {
 };
 
 // Calculates the weight of the items in the knapsack (class' solution)
-float VNS::SolutionWeight () {
+double VNS::SolutionWeight () {
 
-   float total_weight = 0;
+   double total_weight = 0;
 
    for(int i = 0; i < items_weight.size(); ++i){
 
@@ -251,9 +251,9 @@ float VNS::SolutionWeight () {
 };
 
 // Calculates the weight of the items in the knapsack (new solution)
-float VNS::SolutionWeight (const vector<bool> &new_solution) {
+double VNS::SolutionWeight (const vector<bool> &new_solution) {
 
-   float total_weight = 0;
+   double total_weight = 0;
 
    for(int i = 0; i < items_weight.size(); ++i){
 
@@ -265,7 +265,7 @@ float VNS::SolutionWeight (const vector<bool> &new_solution) {
 };
 
 // Shaking procedure: resolve local minimal traps
-float VNS::ShakingSolution (vector<bool> &new_solution) {
+double VNS::ShakingSolution (vector<bool> &new_solution) {
 
    CreateNewSolution(new_solution);
 
@@ -274,7 +274,7 @@ float VNS::ShakingSolution (vector<bool> &new_solution) {
 
 // Improvement procedure: improve the given solution
 // Return: value of the new solution
-float VNS::SolutionImprovement (vector<bool> &new_solution, float new_value, bool first_better) {
+double VNS::SolutionImprovement (vector<bool> &new_solution, double new_value, bool first_better) {
 
    int improve_value = new_value;
 
@@ -310,7 +310,7 @@ float VNS::SolutionImprovement (vector<bool> &new_solution, float new_value, boo
 
 // Neighborhood change step: wich neighborhood will be explore next
 // Using Sequential Neighborhood change step
-void VNS::SelectNeighborhood (vector<bool> &new_solution, float &new_solution_value) {
+void VNS::SelectNeighborhood (vector<bool> &new_solution, double &new_solution_value) {
 
    if (new_solution_value > solution_value) {
 
@@ -334,7 +334,7 @@ void VNS::ModifyRandomOne (vector<bool> &new_solution) {
 
 // Neighborhood: puts in or takes out 1 random item
 // To improve the solution
-float VNS::ModifyRandomOne (vector<bool> &initial_solution, float initial_solution_value, bool first_better) {
+double VNS::ModifyRandomOne (vector<bool> &initial_solution, double initial_solution_value, bool first_better) {
 
    int new_value = -1;
    int best_value = initial_solution_value;
@@ -410,7 +410,7 @@ void VNS::ModifyRandomTwo (vector<bool> &new_solution) {
 
 // Neighborhood: puts in or takes out 2 random items
 // To improve the solution
-float VNS::ModifyRandomTwo (vector<bool> &initial_solution, float initial_solution_value, bool first_better) {
+double VNS::ModifyRandomTwo (vector<bool> &initial_solution, double initial_solution_value, bool first_better) {
 
    int new_value = -1;
    int best_value = initial_solution_value;
@@ -478,8 +478,8 @@ void VNS::SwapRandomOne (vector<bool> &new_solution) {
    int first_item = 0;
    int second_item = 0;
 
-   float new_weight;
-   float available_weight;
+   double new_weight;
+   double available_weight;
 
    vector<int> in_knapsack;
    vector<int> out_knapsack;
@@ -539,7 +539,7 @@ void VNS::SwapRandomOne (vector<bool> &new_solution) {
 
 // Neighborhood: puts in 1 random item and takes out another random item
 // To improve the solution
-float VNS::SwapRandomOne (vector<bool> &initial_solution, float initial_solution_value, bool first_better) {
+double VNS::SwapRandomOne (vector<bool> &initial_solution, double initial_solution_value, bool first_better) {
 
    int new_value = -1;
    int best_value = initial_solution_value;
@@ -615,8 +615,8 @@ void VNS::SwapRandomTwo (vector<bool> &new_solution) {
    int third_item  = 0;
    int fourth_item = 0;
 
-   float new_weight;
-   float available_weight;
+   double new_weight;
+   double available_weight;
 
    vector<int> first_in_knapsack;
    vector<int> second_in_knapsack;
@@ -725,7 +725,7 @@ void VNS::SwapRandomTwo (vector<bool> &new_solution) {
 
 // Neighborhood: puts in 2 random items and takes out other two random items
 // To improve the solution
-float VNS::SwapRandomTwo (vector<bool> &initial_solution, float initial_solution_value, bool first_better) {
+double VNS::SwapRandomTwo (vector<bool> &initial_solution, double initial_solution_value, bool first_better) {
 
    int new_value = -1;
    int best_value = initial_solution_value;
