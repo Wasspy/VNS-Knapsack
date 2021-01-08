@@ -2,7 +2,7 @@
    Máster Universitario en Investigación en Inteligencia Artificial
    Resolución de problemas con metaheurísticos
 
-   Laura Rabadán Ortega      79088745W      100000298@alumnos.uimp.es
+   Laura Rabadán Ortega      100000298@alumnos.uimp.es
 */
 
 #include <iostream>

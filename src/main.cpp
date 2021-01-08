@@ -2,7 +2,7 @@
    Máster Universitario en Investigación en Inteligencia Artificial
    Resolución de problemas con metaheurísticos
 
-   Laura Rabadán Ortega      79088745W      100000298@alumnos.uimp.es
+   Laura Rabadán Ortega      100000298@alumnos.uimp.es
 */
 
 #include <iostream>
@@ -17,30 +17,6 @@
 using namespace std;
 using namespace chrono;
 
-void getOrderNeighborhood (int order, vector<int> &order_vector) {
-
-   int aux_order = order;
-   int num_neighborhood = 0;
-
-   order_vector.clear();
-
-   while (aux_order > 0) {
-
-      ++num_neighborhood;
-
-      aux_order = aux_order / 10;
-
-      order_vector.push_back(-1);
-   }
-
-   for (int i = num_neighborhood - 1; i > -1; --i) {
-
-      order_vector[i] = order % 10;
-
-      order = order / 10;
-   }
-}
-
 void ReinitializeVector (double value, vector<double> &value_vector) {
 
    int size = value_vector.size();
@@ -53,11 +29,11 @@ void ReinitializeVector (double value, vector<double> &value_vector) {
 
 int main (int argc, char *argv[]) {
 
-   if (argc < 6) {
+   if (argc < 4) {
 
       cerr << "\n ERROR: Número de parámetros insuficientes. " << endl
-           << "\t " << argv[0] << " <semilla> <ejecuciones> <nombre fichero> <orden entornos> <orden entornos VND del GVNS>" << endl
-           << "\t Ejemplo: " << argv[0] << "22 data/knapsack_01.txt 1324 123"
+           << "\t " << argv[0] << " <semilla> <ejecuciones> <nombre fichero>" << endl
+           << "\t Ejemplo: " << argv[0] << "22 data/knapsack_01.txt "
            << endl << endl;
 
       exit (-1);
@@ -70,9 +46,6 @@ int main (int argc, char *argv[]) {
 
    string name = argv[3];
 
-   int order = stoi(argv[4]);
-   int order_VND = stoi(argv[5]);
-
    int total_problems = 0;
 
    double solution_value;
@@ -80,8 +53,8 @@ int main (int argc, char *argv[]) {
    vector<bool> solution;
    vector<bool> initial_solution;
 
-   vector<int> neighborhood_order;
-   vector<int> vnd_neighborhood_order;
+   vector<int> neighborhood_first_order {3,1,2};
+   vector<int> neighborhood_second_order {3,1,9,2};
 
    // Time calculation
    auto start = system_clock::now();
@@ -90,37 +63,42 @@ int main (int argc, char *argv[]) {
    duration<double,micro> duration = end - start;
 
    // Statistic
-   vector<double> best_time(3,9999);
-   vector<double> best_value(3,-1);
+   vector<double> best_time(7,9999);
+   vector<double> best_value(7,-1);
 
    vector<double> aux_time;
    vector<double> aux_value;
 
-   vector<double> mean_times(3,0);
-   vector<double> mean_values(3,0);
+   vector<double> mean_times(7,0);
+   vector<double> mean_values(7,0);
 
-   vector<double> median_times(3,0);
-   vector<double> median_values(3,0);
+   vector<double> median_times(7,0);
+   vector<double> median_values(7,0);
 
-   vector<double> standard_deviation_times(3,0);
-   vector<double> standard_deviation_values(3,0);
+   vector<double> standard_deviation_times(7,0);
+   vector<double> standard_deviation_values(7,0);
 
-   vector<double> VND_times;
-   vector<double> BVNS_times;
-   vector<double> GVNS_times;
+   vector<double> VND_first_times;
+   vector<double> VND_second_times;
+   vector<double> BVNS_first_times;
+   vector<double> BVNS_second_times;
+   vector<double> GVNS_first_times;
+   vector<double> GVNS_second_times;
+   vector<double> GVNS_third_times;
 
-   vector<double> VND_values;
-   vector<double> BVNS_values;
-   vector<double> GVNS_values;
+   vector<double> VND_first_values;
+   vector<double> VND_second_values;
+   vector<double> BVNS_first_values;
+   vector<double> BVNS_second_values;
+   vector<double> GVNS_first_values;
+   vector<double> GVNS_second_values;
+   vector<double> GVNS_third_values;
 
    DataProblem data(name);
 
    total_problems = data.getNumProblems();
 
-   getOrderNeighborhood(order, neighborhood_order);
-   getOrderNeighborhood(order_VND, vnd_neighborhood_order);
-
-   cout << "Instances,VND,BVNS,GVNS";
+   cout << "Instances,VND_2s,VND_4s,BVNS_2s,BVNS_4s,GVNS_2s,GVNS_4s,GVNS_4s_2s";
 
    for (int i = 0; i < total_problems; ++i) {
 
@@ -130,24 +108,32 @@ int main (int argc, char *argv[]) {
       ReinitializeVector(-1, best_value);
       ReinitializeVector(9999, best_time);
 
-      ReinitializeVector(0, median_times);
-      ReinitializeVector(0, median_values);
+      VND_first_times.clear();  VND_second_times.clear();
+      BVNS_first_times.clear(); BVNS_second_times.clear();
+      GVNS_first_times.clear(); GVNS_second_times.clear(); GVNS_third_times.clear();
 
-      ReinitializeVector(0, standard_deviation_times);
-      ReinitializeVector(0, standard_deviation_values);
-
-      VND_times.clear();  BVNS_times.clear();  GVNS_times.clear();
-      VND_values.clear(); BVNS_values.clear(); GVNS_values.clear();
+      VND_first_values.clear();  VND_second_values.clear();
+      BVNS_first_values.clear(); BVNS_second_values.clear();
+      GVNS_first_values.clear(); GVNS_second_values.clear(); GVNS_third_values.clear();
 
       for (int j = 0; j < iterations; ++j) {
 
          initial_solution = Greedy(data, i);
 
-         VNS vns(data.getKnapsackWeight(i), data.getItemValue(i), data.getItemWeight(i),
-                 initial_solution, neighborhood_order);
+         // Create 2 different classes with 2 different neighborhoods order
+         // First order -> change 2 - swap 2 (1 pair) - change 1
+         VNS vns_first_order(data.getKnapsackWeight(i), data.getItemValue(i),
+                             data.getItemWeight(i), initial_solution,
+                             neighborhood_first_order);
 
+         // Second order -> change 2 - swap 4 (2 pairs) - change 1
+         VNS vns_second_order(data.getKnapsackWeight(i), data.getItemValue(i),
+                             data.getItemWeight(i), initial_solution,
+                             neighborhood_second_order);
+
+         // VND with 1st order
          start = system_clock::now();
-         solution_value = VND(vns, solution);
+         solution_value = VND(vns_first_order, solution);
          end = system_clock::now();
 
          duration = end - start;
@@ -165,39 +151,42 @@ int main (int argc, char *argv[]) {
          mean_values[0] += solution_value;
          mean_times[0] += duration.count();
 
-         VND_values.push_back(solution_value);
-         VND_times.push_back(duration.count());
+         VND_first_values.push_back(solution_value);
+         VND_first_times.push_back(duration.count());
 
-         vns.setSolution(initial_solution);
-         vns.setIndexNeighborhood(0);
-
+         // VND with 2nd order
          start = system_clock::now();
-         solution_value = BVNS(vns, solution);
+         solution_value = VND(vns_second_order, solution);
          end = system_clock::now();
 
          duration = end - start;
 
          if (solution_value > best_value[1]) {
 
-            best_value[1] = solution_value;
+         best_value[1] = solution_value;
          }
 
          if (duration.count() < best_time[1]) {
 
-            best_time[1] = duration.count();
+         best_time[1] = duration.count();
          }
 
          mean_values[1] += solution_value;
          mean_times[1] += duration.count();
 
-         BVNS_values.push_back(solution_value);
-         BVNS_times.push_back(duration.count());
+         VND_second_values.push_back(solution_value);
+         VND_second_times.push_back(duration.count());
 
-         vns.setSolution(initial_solution);
-         vns.setIndexNeighborhood(0);
 
+         vns_first_order.setSolution(initial_solution);
+         vns_first_order.setIndexNeighborhood(0);
+
+         vns_second_order.setSolution(initial_solution);
+         vns_second_order.setIndexNeighborhood(0);
+
+         // BVNS with 1st order
          start = system_clock::now();
-         solution_value = GVNS(vns, solution);
+         solution_value = BVNS(vns_first_order, solution);
          end = system_clock::now();
 
          duration = end - start;
@@ -215,12 +204,109 @@ int main (int argc, char *argv[]) {
          mean_values[2] += solution_value;
          mean_times[2] += duration.count();
 
-         GVNS_values.push_back(solution_value);
-         GVNS_times.push_back(duration.count());
+         BVNS_first_values.push_back(solution_value);
+         BVNS_first_times.push_back(duration.count());
+
+         // BVNS with 2nd order
+         start = system_clock::now();
+         solution_value = BVNS(vns_second_order, solution);
+         end = system_clock::now();
+
+         duration = end - start;
+
+         if (solution_value > best_value[3]) {
+
+            best_value[3] = solution_value;
+         }
+
+         if (duration.count() < best_time[3]) {
+
+            best_time[3] = duration.count();
+         }
+
+         mean_values[3] += solution_value;
+         mean_times[3] += duration.count();
+
+         BVNS_second_values.push_back(solution_value);
+         BVNS_second_times.push_back(duration.count());
+
+
+         vns_first_order.setSolution(initial_solution);
+         vns_first_order.setIndexNeighborhood(0);
+
+         vns_second_order.setSolution(initial_solution);
+         vns_second_order.setIndexNeighborhood(0);
+
+         // GVNS with 1st order - VND with 1st order
+         start = system_clock::now();
+         solution_value = GVNS(vns_first_order, solution);
+         end = system_clock::now();
+
+         duration = end - start;
+
+         if (solution_value > best_value[4]) {
+
+            best_value[4] = solution_value;
+         }
+
+         if (duration.count() < best_time[4]) {
+
+            best_time[4] = duration.count();
+         }
+
+         mean_values[4] += solution_value;
+         mean_times[4] += duration.count();
+
+         GVNS_first_values.push_back(solution_value);
+         GVNS_first_times.push_back(duration.count());
+
+         // GVNS with 2nd order - VND with 2nd order
+         start = system_clock::now();
+         solution_value = GVNS(vns_second_order, solution);
+         end = system_clock::now();
+
+         duration = end - start;
+
+         if (solution_value > best_value[5]) {
+
+            best_value[5] = solution_value;
+         }
+
+         if (duration.count() < best_time[5]) {
+
+            best_time[5] = duration.count();
+         }
+
+         mean_values[5] += solution_value;
+         mean_times[5] += duration.count();
+
+         GVNS_second_values.push_back(solution_value);
+         GVNS_second_times.push_back(duration.count());
+
+         // GVNS with 2nd order - VND with 1st order
+         start = system_clock::now();
+         solution_value = GVNS(vns_second_order, solution, neighborhood_first_order);
+         end = system_clock::now();
+
+         duration = end - start;
+
+         if (solution_value > best_value[6]) {
+
+            best_value[6] = solution_value;
+         }
+
+         if (duration.count() < best_time[6]) {
+
+            best_time[6] = duration.count();
+         }
+
+         mean_values[6] += solution_value;
+         mean_times[6] += duration.count();
+
+         GVNS_third_values.push_back(solution_value);
+         GVNS_third_times.push_back(duration.count());
 
       }
-
-      mean_times[0] /= 100; mean_times[1] /= 100; mean_times[2] /= 100; mean_times[3] /= 100;
 
       cout << "\n(mean_values) P" << i + 1;
 
@@ -233,78 +319,124 @@ int main (int argc, char *argv[]) {
 
       cout << "\n(value_median) P" << i + 1;
 
-      sort(VND_values.begin(), VND_values.end());
-      sort(BVNS_values.begin(), BVNS_values.end());
-      sort(GVNS_values.begin(), GVNS_values.end());
+      ReinitializeVector(0, median_values);
 
-      median_values[0] = (VND_values[iterations/2]  + VND_values[iterations/2 - 1]) / 2;
-      median_values[1] = (BVNS_values[iterations/2] + BVNS_values[iterations/2 - 1]) / 2;
-      median_values[2] = (GVNS_values[iterations/2] + GVNS_values[iterations/2 - 1]) / 2;
+      sort(VND_first_values.begin(),   VND_first_values.end());
+      sort(VND_second_values.begin(),  VND_second_values.end());
+      sort(BVNS_first_values.begin(),  BVNS_first_values.end());
+      sort(BVNS_second_values.begin(), BVNS_second_values.end());
+      sort(GVNS_first_values.begin(),  GVNS_first_values.end());
+      sort(GVNS_second_values.begin(), GVNS_second_values.end());
+      sort(GVNS_third_values.begin(),  GVNS_third_values.end());
 
-      cout << "," << median_values[0] << "," << median_values[1] << "," << median_values[2];
+      median_values[0] = (VND_first_values[iterations/2]  + VND_first_values[iterations/2 - 1]) / 2;
+      median_values[1] = (VND_second_values[iterations/2]  + VND_second_values[iterations/2 - 1]) / 2;
+      median_values[2] = (BVNS_first_values[iterations/2] + BVNS_first_values[iterations/2 - 1]) / 2;
+      median_values[3] = (BVNS_second_values[iterations/2] + BVNS_second_values[iterations/2 - 1]) / 2;
+      median_values[4] = (GVNS_first_values[iterations/2] + GVNS_first_values[iterations/2 - 1]) / 2;
+      median_values[5] = (GVNS_second_values[iterations/2] + GVNS_second_values[iterations/2 - 1]) / 2;
+      median_values[6] = (GVNS_third_values[iterations/2] + GVNS_third_values[iterations/2 - 1]) / 2;
+
+      cout << "," << median_values[0] << "," << median_values[1] << "," << median_values[2]
+           << "," << median_values[3] << "," << median_values[4] << "," << median_values[5]
+           << "," << median_values[6];
 
       cout << "\n(value_sd) P" << i + 1;
 
       ReinitializeVector(0, standard_deviation_values);
 
-      for (int k = 0; k < VND_values.size(); ++k) {
+      for (int k = 0; k < VND_first_values.size(); ++k) {
 
-         standard_deviation_values[0] += (VND_values[k] - mean_values[0])  * (VND_values[k] - mean_values[0]);
-         standard_deviation_values[1] += (BVNS_values[k] - mean_values[1]) * (BVNS_values[k] - mean_values[1]);
-         standard_deviation_values[2] += (GVNS_values[k] - mean_values[2]) * (GVNS_values[k] - mean_values[2]);
+         standard_deviation_values[0] += (VND_first_values[k] - mean_values[0])   * (VND_first_values[k] - mean_values[0]);
+         standard_deviation_values[1] += (VND_second_values[k] - mean_values[1])  * (VND_second_values[k] - mean_values[1]);
+         standard_deviation_values[2] += (BVNS_first_values[k] - mean_values[2])  * (BVNS_first_values[k] - mean_values[2]);
+         standard_deviation_values[3] += (BVNS_second_values[k] - mean_values[3]) * (BVNS_second_values[k] - mean_values[3]);
+         standard_deviation_values[4] += (GVNS_first_values[k] - mean_values[4])  * (GVNS_first_values[k] - mean_values[4]);
+         standard_deviation_values[5] += (GVNS_second_values[k] - mean_values[5]) * (GVNS_second_values[k] - mean_values[5]);
+         standard_deviation_values[6] += (GVNS_third_values[k] - mean_values[6])  * (GVNS_third_values[k] - mean_values[6]);
       }
 
       standard_deviation_values[0] = sqrt(standard_deviation_values[0] / iterations);
       standard_deviation_values[1] = sqrt(standard_deviation_values[1] / iterations);
       standard_deviation_values[2] = sqrt(standard_deviation_values[2] / iterations);
+      standard_deviation_values[3] = sqrt(standard_deviation_values[3] / iterations);
+      standard_deviation_values[4] = sqrt(standard_deviation_values[4] / iterations);
+      standard_deviation_values[5] = sqrt(standard_deviation_values[5] / iterations);
+      standard_deviation_values[6] = sqrt(standard_deviation_values[6] / iterations);
 
       cout << "," << standard_deviation_values[0] << "," << standard_deviation_values[1]
-           << "," << standard_deviation_values[1];
+           << "," << standard_deviation_values[2] << "," << standard_deviation_values[3]
+           << "," << standard_deviation_values[4] << "," << standard_deviation_values[5]
+           << "," << standard_deviation_values[6];
 
       cout << "\n(best_value) P" << i + 1 << "," << best_value[0] << "," << best_value[1]
-           << "," << best_value[2];
+           << "," << best_value[2] << "," << best_value[3] << "," << best_value[4]
+           << "," << best_value[5] << "," << best_value[6];
 
-     cout << "\n(mean_times) P" << i + 1;
+      cout << "\n(mean_times) P" << i + 1;
 
-     for (int k = 0; k < mean_times.size(); ++k) {
+      for (int k = 0; k < mean_times.size(); ++k) {
 
-        mean_times[k] /= iterations;
+       mean_times[k] /= iterations;
 
-        cout << "," << mean_times[k];
-     }
+       cout << "," << mean_times[k];
+      }
 
-     cout << "\n(time_median) P" << i + 1;
+      cout << "\n(value_median) P" << i + 1;
 
-     sort(VND_times.begin(), VND_times.end());
-     sort(BVNS_times.begin(), BVNS_times.end());
-     sort(GVNS_times.begin(), GVNS_times.end());
+      ReinitializeVector(0, median_times);
 
-     median_times[0] = (VND_times[iterations/2]  + VND_times[iterations/2 - 1]) / 2;
-     median_times[1] = (BVNS_times[iterations/2] + BVNS_times[iterations/2 - 1]) / 2;
-     median_times[2] = (GVNS_times[iterations/2] + GVNS_times[iterations/2 - 1]) / 2;
+      sort(VND_first_times.begin(),   VND_first_times.end());
+      sort(VND_second_times.begin(),  VND_second_times.end());
+      sort(BVNS_first_times.begin(),  BVNS_first_times.end());
+      sort(BVNS_second_times.begin(), BVNS_second_times.end());
+      sort(GVNS_first_times.begin(),  GVNS_first_times.end());
+      sort(GVNS_second_times.begin(), GVNS_second_times.end());
+      sort(GVNS_third_times.begin(),  GVNS_third_times.end());
 
-     cout << "," << median_times[0] << "," << median_times[1] << "," << median_times[2];
+      median_times[0] = (VND_first_times[iterations/2]  + VND_first_times[iterations/2 - 1]) / 2;
+      median_times[1] = (VND_second_times[iterations/2]  + VND_second_times[iterations/2 - 1]) / 2;
+      median_times[2] = (BVNS_first_times[iterations/2] + BVNS_first_times[iterations/2 - 1]) / 2;
+      median_times[3] = (BVNS_second_times[iterations/2] + BVNS_second_times[iterations/2 - 1]) / 2;
+      median_times[4] = (GVNS_first_times[iterations/2] + GVNS_first_times[iterations/2 - 1]) / 2;
+      median_times[5] = (GVNS_second_times[iterations/2] + GVNS_second_times[iterations/2 - 1]) / 2;
+      median_times[6] = (GVNS_third_times[iterations/2] + GVNS_third_times[iterations/2 - 1]) / 2;
 
-     cout << "\n(time_sd) P" << i + 1;
+      cout << "," << median_times[0] << "," << median_times[1] << "," << median_times[2]
+           << "," << median_times[3] << "," << median_times[4] << "," << median_times[5]
+           << "," << median_times[6];
 
-     ReinitializeVector(0, standard_deviation_times);
+      cout << "\n(time_sd) P" << i + 1;
 
-     for (int k = 0; k < VND_times.size(); ++k) {
+      ReinitializeVector(0, standard_deviation_times);
 
-        standard_deviation_times[0] += (VND_times[k] - mean_times[0])  * (VND_times[k] - mean_times[0]);
-        standard_deviation_times[1] += (BVNS_times[k] - mean_times[1]) * (BVNS_times[k] - mean_times[1]);
-        standard_deviation_times[2] += (GVNS_times[k] - mean_times[2]) * (GVNS_times[k] - mean_times[2]);
-     }
+      for (int k = 0; k < VND_first_times.size(); ++k) {
 
-     standard_deviation_times[0] = sqrt(standard_deviation_times[0] / iterations);
-     standard_deviation_times[1] = sqrt(standard_deviation_times[1] / iterations);
-     standard_deviation_times[2] = sqrt(standard_deviation_times[2] / iterations);
+       standard_deviation_times[0] += (VND_first_times[k] - mean_times[0])   * (VND_first_times[k] - mean_times[0]);
+       standard_deviation_times[1] += (VND_second_times[k] - mean_times[1])  * (VND_second_times[k] - mean_times[1]);
+       standard_deviation_times[2] += (BVNS_first_times[k] - mean_times[2])  * (BVNS_first_times[k] - mean_times[2]);
+       standard_deviation_times[3] += (BVNS_second_times[k] - mean_times[3]) * (BVNS_second_times[k] - mean_times[3]);
+       standard_deviation_times[4] += (GVNS_first_times[k] - mean_times[4])  * (GVNS_first_times[k] - mean_times[4]);
+       standard_deviation_times[5] += (GVNS_second_times[k] - mean_times[5]) * (GVNS_second_times[k] - mean_times[5]);
+       standard_deviation_times[6] += (GVNS_third_times[k] - mean_times[6])  * (GVNS_third_times[k] - mean_times[6]);
+      }
 
-     cout << "," << standard_deviation_times[0] << "," << standard_deviation_times[1]
-          << "," << standard_deviation_times[1];
+      standard_deviation_times[0] = sqrt(standard_deviation_times[0] / iterations);
+      standard_deviation_times[1] = sqrt(standard_deviation_times[1] / iterations);
+      standard_deviation_times[2] = sqrt(standard_deviation_times[2] / iterations);
+      standard_deviation_times[3] = sqrt(standard_deviation_times[3] / iterations);
+      standard_deviation_times[4] = sqrt(standard_deviation_times[4] / iterations);
+      standard_deviation_times[5] = sqrt(standard_deviation_times[5] / iterations);
+      standard_deviation_times[6] = sqrt(standard_deviation_times[6] / iterations);
 
-     cout << "\n(best_time) P" << i + 1 << "," << best_time[0] << "," << best_time[1]
-          << "," << best_time[2];
+      cout << "," << standard_deviation_times[0] << "," << standard_deviation_times[1]
+         << "," << standard_deviation_times[2] << "," << standard_deviation_times[3]
+         << "," << standard_deviation_times[4] << "," << standard_deviation_times[5]
+         << "," << standard_deviation_times[6];
+
+      cout << "\n(best_time) P" << i + 1 << "," << best_time[0] << "," << best_time[1]
+         << "," << best_time[2] << "," << best_time[3] << "," << best_time[4]
+         << "," << best_time[5] << "," << best_time[6];
    }
 
 

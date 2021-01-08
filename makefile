@@ -2,7 +2,7 @@
 #	Máster Universitario en Investigación en Inteligencia Artificial
 #	Resolución de problemas con metaheurísticos
 #
-#  Laura Rabadán Ortega      79088745W      100000298@alumnos.uimp.es
+#  Laura Rabadán Ortega      100000298@alumnos.uimp.es
 #
 
 SRC = src
@@ -10,7 +10,7 @@ INC = include
 OBJ = obj
 BIN = bin
 CXX = g++
-CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2
+CPPFLAGS = -Wall -g  -I$(INC) -c --std=c++11 -O2 -w
 
 all: $(BIN)/VNS_Knapsack
 
@@ -32,8 +32,9 @@ $(BIN)/VNS_Knapsack: $(OBJ)/main.o $(OBJ)/instance_data.o $(OBJ)/VNS_functions.o
 	$(CXX) -o $(BIN)/VNS_Knapsack $(OBJ)/main.o $(OBJ)/instance_data.o $(OBJ)/VNS_functions.o $(OBJ)/VNS_algorithms.o
 
 	@echo "\n ************************************"
-	@echo "\n"  Programa compilado. Para ejecutar: "\n\n\t"bin/VNS_Knapsack \<semilla\> \<ejecuciones\> \<fichero datos\> \<orden entornos\> \<orden entornos VND-GVNS\>
-	@echo "\n"  Ejemplo: bin/VNS_Knapsack 22 50 data/knapsack_01.txt 1234 123
+	@echo "\n"  Programa compilado. Para ejecutar: "\n\n\t"bin/VNS_Knapsack \<semilla\> \<ejecuciones\> \<fichero datos\>
+	@echo "\n"  Ejemplo: bin/VNS_Knapsack 22 50 data/Instances.txt
+	@echo "\n\n"  Para ejecutar el caso anterior: make example
 	@echo "\n ************************************ \n"
 
 # ************ Limpieza de ficheros ************
@@ -42,3 +43,8 @@ clean:
 	-rm $(OBJ)/* $(BIN)/*
 
 	@echo "\n" Se han borrado los ficheros de las carpetas obj y bin "\n"
+
+# ************ Programa de ejemplo ************
+
+example:
+	bin/VNS_Knapsack 22 50 data/Instances.txt
